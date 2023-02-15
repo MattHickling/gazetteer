@@ -1,4 +1,4 @@
-$('#submitName').on(click, function(e) {
+$('#submitName').on("click", function(e) {
 
 	$.ajax({
 		url: "libs/php/getCountryInfo.php",
