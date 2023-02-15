@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="libs/css/styles.css">
+</head>
+<body>
+
+	<table>
+
+		<tr>	
+			<th>API name</th>
+			<th>API Description</th>
+			<th>Method</th>	
+		</tr>
+		
+		<tr>
+			<td>Country Name</td>
+			<td>Enter a country name to find out the poulation and capital city</td>
+			<td><input type="text" name="countryName" id="countryName"></td>
+			<td><button type="submit" id="submitName">Submit</button></td> 
+			<tr>
+				<td>Capital: </td>
+				<td id="txtCapital"></td>
+			</tr>
+			<tr>
+				<td>Population: </td>
+				<td id="txtPopulation"></td>	
+			</tr>				
+		</tr>
+		
+		<tr>
+			<td>Ocean</td>
+			<td>Find the nearest ocean using longitude and latitude</td>
+			<td><input type="text" id="long" name="long" placeholder="Longitude"></td>
+			<td><input type="text" id="lat" name="lat" placeholder="Latitude"></td>
+			<td><button type="submit" id="submitOcean">Submit</button></td>
+			<td id="ocean"></td>
+		</tr>
+		
+		<tr>	
+			<td>Address</td>
+			<td>Finds the nearest street and address for a given lat/lng pair.</td>
+			<td><input type="text" id="lng" name="lng" placeholder="Longitude"></td>
+			<td><input type="text" id="lati" name="lati" placeholder="Latitude"></td>
+			<td><button type="submit" id="submitAddress">Submit</button></td>
+			<td id="address"></td>
+		</tr>
+		
+	</table>
+
+	<script type="text/javascript" src="libs/js/script.js"></script>
+	<script type="text/javascript" src="libs/js/jquery-3.6.3.js"></script>
+</body>
+</html>
