@@ -5,7 +5,7 @@ $('#submitName').on("click", function(e) {
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			country: $('#Country').val(),
+			country: $('#country').val(),
 		},
 		success: function(result) {
 
