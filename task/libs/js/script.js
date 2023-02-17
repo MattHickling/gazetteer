@@ -20,7 +20,8 @@ $('#submitName').on("click", function(e) {
 		},
 
 		error: function(jqXHR, textStatus, errorThrown) {
-			
+			alert("something went wrong");
+
 }}); 
 });
 
@@ -45,7 +46,7 @@ $('#submitOcean').on('click', function(e) {
 		
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			alert("something went wrong")
+			alert("something went wrong");
 		}
 	}); 
 
@@ -73,7 +74,7 @@ $('#submitOcean').on('click', function(e) {
 			
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("something went wrong")
+				alert("something went wrong");
 			}
 		}); 
 	

@@ -36,6 +36,14 @@
 		factory( global );
 	}
 
+	$(window).on('load', function () {
+		if ($('#preloader').length) {
+		$('#preloader').delay(1000).fadeOut('slow', function () {
+		$(this).remove();
+		});
+		}
+		});
+
 // Pass this if window is not defined yet
 } )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
