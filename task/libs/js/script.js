@@ -5,7 +5,7 @@ $('#submitName').on("click", function(e) {
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			country: $('#country').val(),
+			country: $('#countryName').val(),
 		},
 		success: function(result) {
 
@@ -15,7 +15,6 @@ $('#submitName').on("click", function(e) {
 
 				$('#txtCapital').html(result['data'][0]['capital']);
 				$('#txtPopulation').html(result['data'][0]['population']);
-
 			}
 		},
 
