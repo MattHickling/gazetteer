@@ -18,7 +18,7 @@
 		</tr>
 		
 		<tr>
-			<td>Country Name</td>
+			<td class="title">Country Name</td>
 			<td>Enter a country name to find out the poulation and capital city</td>
 			<td><input type="text" name="countryName" id="countryName"></td>
 			<td><button type="submit" id="submitName">Submit</button></td> 
@@ -33,8 +33,8 @@
 		</tr>
 		
 		<tr>
-			<td>Ocean</td>
-			<td>Find the nearest ocean using longitude and latitude</td>
+			<td class="title">Ocean</td>
+			<td>Returns the ocean or sea for the given latitude/longitude</td>
 			<td><input type="text" id="long" name="long" placeholder="Longitude"></td>
 			<td><input type="text" id="lat" name="lat" placeholder="Latitude"></td>
 			<td><button type="submit" id="submitOcean">Submit</button></td>
@@ -42,12 +42,12 @@
 		</tr>
 		
 		<tr>	
-			<td>Address</td>
-			<td>Finds the nearest street and address for a given lat/lng pair.</td>
+			<td class="title">Weather</td>
+			<td>Finds a weather station with the most recent weather observation, if the coordinates are within 100Km of the closest station</td>
 			<td><input type="text" id="lng" name="lng" placeholder="Longitude"></td>
 			<td><input type="text" id="lati" name="lati" placeholder="Latitude"></td>
-			<td><button type="submit" id="submitAddress">Submit</button></td>
-			<td id="address"></td>
+			<td><button type="submit" id="submitWeather">Submit</button></td>
+			<td id="weatherObservation"></td>
 		</tr>
 		
 	</table>

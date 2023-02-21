@@ -13,8 +13,8 @@ $('#submitName').on("click", function(e) {
 
 			if (result.status.name == "ok") {
 
-				$('#txtCapital').html(result['data'][0]['capital']);
-				$('#txtPopulation').html(result['data'][0]['population']);
+			$('#txtCapital').html(result['data'][0]['capital']);
+			$('#txtPopulation').html(result['data'][0]['population']);
 			}
 		},
 
@@ -38,7 +38,7 @@ $('#submitOcean').on('click', function(e) {
 
 		console.log(JSON.stringify(result));
 	
-		if (result.status.name == "ok") {
+			if (result.status.name == "ok") {
 
 			$('#ocean').html(result);
 		}
@@ -51,24 +51,24 @@ $('#submitOcean').on('click', function(e) {
 
 	});
 
-	$('#submitAddress').on('click', function(e) {
+	$('#submitWeather').on('click', function(e) {
 
 		$.ajax({
-			url: "libs/php/address.php",
+			url: "libs/php/weather.php",
 			type: 'POST',
 			dataType: 'json',
 			data: {
 			lng: $('#lng').val(),
-			lati: $('#lati').val(),
+			latitude: $('#latitude').val(),
 			},
 
 			success: function(result) {
 	
 			console.log(JSON.stringify(result));
 		
-			if (result.status.name == "ok") {
+				if (result.status.name == "ok") {
 	
-				$('#address').html(result);
+				$('#weatherObservation').html(result);
 			}
 			
 			},
@@ -78,3 +78,4 @@ $('#submitOcean').on('click', function(e) {
 		}); 
 	
 		});
+

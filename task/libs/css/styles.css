@@ -4,6 +4,17 @@ body {
     font-size: 1.5rem;
 }
 
+th{
+    background-color: yellow;
+    color: black;
+}
+
+td.title{
+    border: white solid 1px;
+    color: black;
+    background-color: white;
+}
+
 input {
         display: flex;
         align-items: center;
@@ -18,13 +29,15 @@ input {
     background-color: white;
 }
 
-#ocean{
+td#ocean{
     color: white;
 }
 
-#address{
+td#address{
     color: white;
 }
+
+
 
 #preloader {
 position: fixed;
