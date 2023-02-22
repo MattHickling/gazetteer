@@ -1,6 +1,6 @@
 body {
-    background-color: blue;
-    color: white;
+    /* background-color: blue; */
+    /* color: white; */
     font-size: 1.5rem;
 }
 
@@ -21,21 +21,8 @@ input {
         justify-content: end;   
 }
 
-#txtCapital {
-    background-color: white;
-}
 
-#txtPopulation{
-    background-color: white;
-}
 
-td#ocean{
-    color: white;
-}
-
-td#address{
-    color: white;
-}
 
 
 

@@ -5,21 +5,22 @@ $('#submitName').on("click", function(e) {
 		type: 'POST',
 		dataType: 'json',
 		data: {
-			country: $('#countryName').val(),
-		},
-		success: function(result) {
+			country: $('#country').val(),
+			
 
+		},
+		success: function(result) {		
 			console.log(JSON.stringify(result));
 
 			if (result.status.name == "ok") {
-
+			console.log(result['data'][0]['population'])
 			$('#txtCapital').html(result['data'][0]['capital']);
 			$('#txtPopulation').html(result['data'][0]['population']);
 			}
 		},
 
 		error: function(jqXHR, textStatus, errorThrown) {
-			alert("something went wrong");
+			// alert("something went wrong");
 
 }}); 
 });
@@ -31,21 +32,20 @@ $('#submitOcean').on('click', function(e) {
 		type: 'POST',
 		dataType: 'json',
 		data: {
-		long: $('#long').val(),
-		lat: $('#lat').val()
+			longitude: $('#longitude').val(),
+			latitude: $('#latitude').val()
 		},
 		success: function(result) {
-
-		console.log(JSON.stringify(result));
+			console.log(result);
+			// console.log(JSON.stringify(result));
 	
 			if (result.status.name == "ok") {
 
-			$('#ocean').html(result);
-		}
-		
+			$('#ocean').html(result.data.name);
+		}		
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			alert("something went wrong");
+			// alert("something went wrong");
 		}
 	}); 
 
@@ -58,22 +58,22 @@ $('#submitOcean').on('click', function(e) {
 			type: 'POST',
 			dataType: 'json',
 			data: {
-			lng: $('#lng').val(),
-			latitude: $('#latitude').val(),
+				lat: $('#lat').val(),
+				lng: $('#lng').val(),
 			},
 
 			success: function(result) {
-	
-			console.log(JSON.stringify(result));
+				console.log(result);
+				// console.log(JSON.stringify(result));
 		
 				if (result.status.name == "ok") {
 	
-				$('#weatherObservation').html(result);
+				$('#weatherObservation').html(result.data.clouds);
 			}
 			
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("something went wrong");
+				// alert("something went wrong");
 			}
 		}); 
 	

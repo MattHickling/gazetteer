@@ -14,13 +14,13 @@
 		<tr>	
 			<th>API name</th>
 			<th>API Description</th>
-			<th>Method</th>	
+			<th>Input</th>	
 		</tr>
 		
 		<tr>
-			<td class="title">Country Name</td>
-			<td>Enter a country name to find out the poulation and capital city</td>
-			<td><input type="text" name="countryName" id="countryName"></td>
+			<td class="title">Country Abbreviation</td>
+			<td>Enter a country abbreviation to find out the population and capital city</td>
+			<td><input type="text" name="country" id="country"></td>
 			<td><button type="submit" id="submitName">Submit</button></td> 
 			<tr>
 				<td>Capital: </td>
@@ -35,19 +35,25 @@
 		<tr>
 			<td class="title">Ocean</td>
 			<td>Returns the ocean or sea for the given latitude/longitude</td>
-			<td><input type="text" id="long" name="long" placeholder="Longitude"></td>
-			<td><input type="text" id="lat" name="lat" placeholder="Latitude"></td>
+			<td><input type="text" id="latitude" name="latitude" placeholder="Latitude"></td>
+			<td><input type="text" id="longitude" name="longitude" placeholder="Longitude"></td>	
 			<td><button type="submit" id="submitOcean">Submit</button></td>
-			<td id="ocean"></td>
+			<tr>
+				<td>Ocean name: </td>
+				<td id="ocean"></td>
+			</tr>
 		</tr>
 		
 		<tr>	
 			<td class="title">Weather</td>
-			<td>Finds a weather station with the most recent weather observation, if the coordinates are within 100Km of the closest station</td>
+			<td>Finds a weather station with the most recent weather observation, if the coordinates are within 100Km of the closest station</td>		
+			<td><input type="text" id="lat" name="lat" placeholder="Latitude"></td>
 			<td><input type="text" id="lng" name="lng" placeholder="Longitude"></td>
-			<td><input type="text" id="lati" name="lati" placeholder="Latitude"></td>
 			<td><button type="submit" id="submitWeather">Submit</button></td>
-			<td id="weatherObservation"></td>
+			<tr>
+				<td>Weather report: </td>
+				<td id="weatherObservation"></td>
+			</tr>
 		</tr>
 		
 	</table>
