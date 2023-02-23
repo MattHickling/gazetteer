@@ -28,7 +28,7 @@ $('#submitName').on("click", function(e) {
 $('#submitOcean').on('click', function(e) {
 
 	$.ajax({
-		url: "libs/php/Ocean.php",
+		url: "libs/php/ocean.php",
 		type: 'POST',
 		dataType: 'json',
 		data: {
