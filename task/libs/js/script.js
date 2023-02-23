@@ -20,7 +20,7 @@ $('#submitName').on("click", function(e) {
 		},
 
 		error: function(jqXHR, textStatus, errorThrown) {
-			// alert("something went wrong");
+			alert("something went wrong");
 
 }}); 
 });
@@ -36,8 +36,8 @@ $('#submitOcean').on('click', function(e) {
 			latitude: $('#latitude').val()
 		},
 		success: function(result) {
-			console.log(result);
-			// console.log(JSON.stringify(result));
+			// console.log(result);
+			console.log(JSON.stringify(result));
 	
 			if (result.status.name == "ok") {
 
@@ -45,7 +45,7 @@ $('#submitOcean').on('click', function(e) {
 		}		
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			// alert("something went wrong");
+			alert("something went wrong");
 		}
 	}); 
 
@@ -63,17 +63,18 @@ $('#submitOcean').on('click', function(e) {
 			},
 
 			success: function(result) {
-				console.log(result);
-				// console.log(JSON.stringify(result));
+				// console.log(result);
+				console.log(JSON.stringify(result));
 		
 				if (result.status.name == "ok") {
 	
-				$('#weatherObservation').html(result.data.clouds);
+				$('#weatherObservation').html(result.data.temperature);
+				
 			}
 			
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				// alert("something went wrong");
+				alert("something went wrong");
 			}
 		}); 
 	
