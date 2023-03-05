@@ -27,13 +27,15 @@ $output['status']['description'] = "success";
 $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
 $countries = [];
 
-foreach ($decode["features"] as $feature) {
-    $country = [
-        "name" => $feature["properties"]["name"],
-        "code" => $feature["properties"]["iso_a2"]
-    ];
-    $countries[] = $country;
+
+
+$searchedCountry = NULL;
+foreach ($decode['features'] as $feature) {
+    if ($feature['properties']['iso_a2'] == $countryCode) {
+        $searchedCountry = $feature;
+    }
 }
+
 $output['countries'] = $countries;
 
 echo json_encode($output);
