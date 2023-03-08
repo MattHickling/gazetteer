@@ -1,43 +1,36 @@
 <?php
 
-ini_set('display_errors', 'On');
-error_reporting(E_ALL);
+$iso_code = $_GET['iso_code'];
 
-$executionStartTime = microtime(true);
+$url = "./countryBorders.geo.json";
 
-$url = './countryBorders.geo.json';
+// Read the contents of the file
+$json = file_get_contents($url);
 
+// Parse the JSON response
+$data = json_decode($json, true);
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_URL,$url);
-
-$result = curl_exec($ch);
-
-curl_close($ch);
-
-header('Content-Type: application/json; charset=UTF-8');
-
-$data = file_get_contents($url);
-$decode = json_decode($data, true);
-$output['status']['code'] = "200";
-$output['status']['name'] = "ok";
-$output['status']['description'] = "success";
-$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-$countries = [];
-
-
-
-$searchedCountry = NULL;
-foreach ($decode['features'] as $feature) {
-    if ($feature['properties']['iso_a2'] == $countryCode) {
-        $searchedCountry = $feature;
-    }
+// Check for JSON parsing errors
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo 'JSON error: ' . json_last_error_msg();
+    exit;
 }
 
-$output['countries'] = $countries;
+// Loop through the features
+foreach ($data["features"] as $feature) {
+    // Get the ISO code of the country
+    $code = $feature["properties"]["iso_a2"];
 
-echo json_encode($output);
+    // Check if it is the country you want
+    if ($code == $iso_code) {
+        // Get the coordinates of the polygon
+        $coordinates = $feature["geometry"]["coordinates"][0];
 
+        header('Content-Type: application/json; charset=UTF-8');
+
+        // Print the coordinates
+        echo json_encode($coordinates);
+        break;
+    }
+}
 ?>

@@ -1,30 +1,38 @@
 <?php
 
-	$executionStartTime = microtime(true);
+$executionStartTime = microtime(true);
 
-	$isoCode = $_POST['iso_code'];
-	
-	$url='https://restcountries.com/v3.1/alpha/' . $isoCode . '?fields=geojson';
+$iso_code = $_POST['iso_code'];
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL,$url);
+$url = 'https://restcountries.com/v2/alpha/' . $iso_code;; 
 
-	$result=curl_exec($ch);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL, $url);
 
-	curl_close($ch);
+$result = curl_exec($ch);
 
-	$data = json_decode($result,true);	
+curl_close($ch);
 
-	$output['status']['code'] = "200";
-	$output['status']['name'] = "ok";
-	$output['status']['description'] = "success";
-	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $data['geojson'];
-	
-	header('Content-Type: application/json; charset=UTF-8');
+$data = json_decode($result, true);
 
-	echo json_encode($output); 
+$output['status']['code'] = "200";
+$output['status']['name'] = "ok";
+$output['status']['description'] = "success";
+$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
+
+$lat = $data['latlng'][0];
+$lng = $data['latlng'][1];
+
+$output['data'] = [
+    "lat" => $lat,
+    "lng" => $lng
+];
+
+header('Content-Type: application/json; charset=UTF-8');
+
+echo json_encode($output);
+
 
 ?>
