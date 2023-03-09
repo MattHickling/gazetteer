@@ -23,13 +23,13 @@ foreach ($data["features"] as $feature) {
 
     // Check if it is the country you want
     if ($code == $iso_code) {
-        // Get the coordinates of the polygon
-        $coordinates = $feature["geometry"]["coordinates"][0];
+        // Get the geometry object
+        $geometry = $feature["geometry"];
 
         header('Content-Type: application/json; charset=UTF-8');
 
-        // Print the coordinates
-        echo json_encode($coordinates);
+        // Print the geometry object
+        echo json_encode($geometry);
         break;
     }
 }

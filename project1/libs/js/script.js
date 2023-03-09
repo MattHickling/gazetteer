@@ -56,12 +56,15 @@ navigator.geolocation.getCurrentPosition(success, error);
 let geojsonLayer = L.geoJSON();
 
 
+let polygonLayer;
+
 $('#countries').on('change', function () {
   let iso_code = $(this).val();
 
-  // if (polygon) {
-  //   map.removeLayer(polygon);
-  // }
+  // Remove existing polygon layer
+  if (polygonLayer) {
+    map.removeLayer(polygonLayer);
+  }
 
   $.ajax({
     url: 'libs/php/getRestCountryInfo.php',
@@ -70,11 +73,12 @@ $('#countries').on('change', function () {
     data: {
       iso_code: iso_code,
     },
+    
     success: function (response) {
       let lat = response.data.lat;
       let lng = response.data.lng;
       console.log(response);
-     
+    
       map.setView([lat, lng], 6);
       marker.setLatLng([lat, lng]);
 
@@ -85,22 +89,25 @@ $('#countries').on('change', function () {
         dataType: 'json',
         success: function (response) {
           console.log(response);
-          console.log(iso_code);
-          // console.log(coordinates);
-          //polygon layer
-          let polygonLayer = L.geoJSON(response,{ 
-            style: function (){
-              return{color: blue, color};
-        } }).bindPopup(function (layer) {
+     
+          // create a new L.geoJSON layer with the geometry object
+          polygonLayer = L.geoJSON({
+            type: "Feature",
+            properties: {},
+            geometry: response
+          }, {
+            style: function () {
+              return{color: 'blue'};
+
+            }
+          }).bindPopup(function (layer) {
             return layer.feature.properties.response;
           }).addTo(map);
           
-    
           map.fitBounds(polygonLayer.getBounds());
-          
         },
       });
     }
+    
   });
 });
-
