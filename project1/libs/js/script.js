@@ -89,7 +89,7 @@ $('#countries').on('change', function () {
         dataType: 'json',
         success: function (response) {
           console.log(response);
-     
+      
           // create a new L.geoJSON layer with the geometry object
           polygonLayer = L.geoJSON({
             type: "Feature",
@@ -98,16 +98,37 @@ $('#countries').on('change', function () {
           }, {
             style: function () {
               return{color: 'blue'};
-
             }
           }).bindPopup(function (layer) {
             return layer.feature.properties.response;
           }).addTo(map);
-          
+      
           map.fitBounds(polygonLayer.getBounds());
+      
+          // Attach a click event listener to the button
+          $('#countryName').on('click', function() {
+            // Make the AJAX request to get the country information
+            $.ajax({
+              url: 'libs/php/getCountryInfo.php',
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                iso_code: iso_code,
+              },
+              success: function (data) {
+                // Update the modal with the country name, capital city, and population
+                $('#country').text(data.name);
+                $('#capitalCity').text(data.capital);
+                $('#population').text(data.population);
+                // Show the modal
+                $('#countryNameModal').modal('show');
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown + ' ' + jqXHR + ' ' + textStatus);
+              }
+            });
+          });
         },
-      });
-    }
-    
-  });
+    });
+  }});
 });

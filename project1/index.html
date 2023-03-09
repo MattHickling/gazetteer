@@ -11,6 +11,7 @@
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="libs/css/bootstrap.css">
+    <script type="text/javascript" src="libs/js/jquery-3.6.3.js"></script>
 
     <!-- leaflet -->
     <link rel="stylesheet" href="libs/leaflet/leaflet.css">
@@ -28,31 +29,33 @@
       </select>
     </form>
 
-    <!-- Country name and capital button trigger modal -->
-<button type="button" class="btn btn-primary" id="countryName" data-toggle="modal" data-target="#exampleModal">
-  <i class="fa-solid fa-globe"></i>
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+    <button type="button" id="countryName" class="btn btn-primary"  data-toggle="modal" data-target="#countryNameModal">
+      <i class="fa-solid fa-globe"></i>
+    </button>
+    
+    <div class="modal fade" id="countryNameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Country Information</h5>
+            <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button> -->
+          </div>
+          <div class="modal-body">
+            <h5><strong>Country Name:</strong><span id="country"></span></h5>
+            <p><strong>Capital City:</strong> <span id="capitalCity"></span></p>
+            <p><strong>Population:</strong> <span id="population"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="countryNameClose">Close</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+    
+
+   
 
 <!-- Population button trigger modal -->
 <button type="button" class="btn btn-primary" id="population" data-toggle="modal" data-target="#exampleModal">
@@ -164,28 +167,37 @@
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade" id="weather" tabindex="-1" role="dialog" aria-labelledby="weatherTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <h5 class="modal-title" id="weatherTitle">Weather Forecast</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <div class="row">
+          <div class="col text-center">
+            <h4 id="modalWeather"></h4>
+            <img id="currentIcon">
+            <p id="currentWeather"></p>
+            <p id="currentTemperature"></p>
+          </div>
+        </div>
+        <div class="row" id="forecast"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
+  
+
 <!--scripts-->
-    <script type="text/javascript" src="libs/js/jquery-3.6.3.js"></script>  
+      
     <script type="text/javascript" src="libs/js/script.js"></script>
     <script src="libs/js/bootstrap.js"></script>
 
