@@ -120,6 +120,21 @@ $('#countries').on('change', function () {
                 $('#country').text(data.name);
                 $('#capitalCity').text(data.capital);
                 $('#population').text(data.population);
+                
+                $.ajax({
+                  url: 'libs/php/getCountryFlag.php',
+                  type: 'GET',
+                  data: { iso_code: iso_code },
+                  dataType: 'json',
+                  success: function(response) {
+                      // Update the flag image source with the URL from the JSON response
+                      $('#flag').attr('src', response.flag_url);
+                  },
+                  error: function(jqXHR, textStatus, errorThrown) {
+                      console.log('Error: ' + textStatus + ' - ' + errorThrown);
+                  }
+                });
+          
                 // Show the modal
                 $('#countryNameModal').modal('show');
               },
@@ -128,7 +143,10 @@ $('#countries').on('change', function () {
               }
             });
           });
-        },
-    });
-  }});
-});
+          
+          $(document).on('click', '#countryNameClose', function() {
+            $('#countryNameModal').modal('hide');
+          });
+        }})
+      }})
+    })

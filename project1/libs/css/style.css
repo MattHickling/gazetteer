@@ -41,15 +41,19 @@ button#countryName.btn.btn-primary{
 
 }
 
+div#countryNameModal.modal.fade.show{
+  width: 70%;
+}
+
 #countryNameModal {
-  z-index: 999;
-  background-color: grey;
+  z-index: 2000;
   color: white;
   position:absolute;
   margin-top: 10%;
-  margin-left: 1.5%;
-  height: 40%;
-  width: 60px;
+  margin-left: 20%;
+  height: 70%;
+  width: 20%;
+  margin-top: 10rem;
 }
 
 button#population.btn.btn-primary {
@@ -111,9 +115,66 @@ button#weatherForecast.btn.btn-primary {
 
 }
 
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out {
- background-color: grey;
+.modal-title,
+.modal-body h5,
+.modal-body p {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 3rem;
+  color: #333;
+}
+
+.modal-header {
+  background-color: #f7f7f7;
+  border-bottom: 1px solid #e5e5e5;
+  padding: 15px;
+  font-size: 1.5rem;
+}
+
+/* .modal-body {
+  padding: 20px;
+}
+.modal-body h5 {
+  margin-bottom: 15px;
+}
+.modal-body p {
+  margin-bottom: 10px;
+} */
+
+.modal-footer .btn-secondary {
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.modal-content {
+  box-shadow: none;
+  border: none;
+}
+
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+#countryNameModal .modal-dialog {
+  max-width: 80%;
+  height: 80%;
 }
 
 

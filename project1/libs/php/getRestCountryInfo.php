@@ -24,10 +24,14 @@ $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime)
 
 $lat = $data['latlng'][0];
 $lng = $data['latlng'][1];
+$flag = $data['flags'][0];
+$name = $data['name'];
 
 $output['data'] = [
+    "name" => $name,
     "lat" => $lat,
-    "lng" => $lng
+    "lng" => $lng,
+    "flag" => $flag
 ];
 
 header('Content-Type: application/json; charset=UTF-8');
