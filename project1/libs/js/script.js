@@ -60,7 +60,7 @@ let polygonLayer;
 
 $('#countries').on('change', function () {
   let iso_code = $(this).val();
-
+  let countryName = $(this).find('option:selected').text();
   // Remove existing polygon layer
   if (polygonLayer) {
     map.removeLayer(polygonLayer);
@@ -146,6 +146,43 @@ $('#countries').on('change', function () {
           
           $(document).on('click', '#countryNameClose', function() {
             $('#countryNameModal').modal('hide');
+          });
+
+          console.log("Button with id='weatherForecast' selected successfully");
+          $('#weatherForecast').on('click', function () {
+            // Get the latitude and longitude of the marker
+            const iso_code = $('#countries').val();
+            const countryName = $('#countries option:selected').text();
+          
+          
+            // Make an AJAX call to get the weather information
+            $.ajax({
+              url: 'libs/php/getWeather.php',
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                country: countryName
+              },
+              success: function (response) {
+                console.log(response);
+          
+                // Update the modal with the weather information
+                // $('#currentTemp').text(response.currentTemp);
+                // $('#minTemp').text(response.minTemp);
+                // $('#maxTemp').text(response.maxTemp);
+                // $('#weatherDesc').text(response.weatherDesc);
+                // $('#forecast').empty();
+                // response.forecast.forEach(function (day) {
+                //   $('#forecast').append(`<li>${day.date}: ${day.temp} (${day.desc})</li>`);
+                // });
+          
+                // Show the modal
+                $('#weatherModal').modal('show');
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown + ' ' + jqXHR + ' ' + textStatus);
+              }
+            });
           });
         }})
       }})
