@@ -34,7 +34,7 @@ button#countryName.btn.btn-primary{
  background-color: grey;
  color: white;
  position:absolute;
- margin-top: 10%;
+ margin-top: 15%;
  margin-left: 1.5%;
  height: 40px;
  width: 40px;
@@ -54,18 +54,6 @@ div#countryNameModal.modal.fade.show{
   height: 70%;
   width: 20%;
   margin-top: 10rem;
-}
-
-button#population.btn.btn-primary {
- z-index: 999;
- background-color: grey;
- color: white;
- position:absolute;
- margin-top: 15%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-
 }
 
 button#currency.btn.btn-primary {
@@ -178,3 +166,13 @@ button#weatherForecast.btn.btn-primary {
 }
 
 
+.modal-title,
+.modal-body h5,
+.modal-body p {
+  font-size: 2rem;
+}
+
+#weatherIcon {
+  width: 6em;
+  height: 5rem;
+}

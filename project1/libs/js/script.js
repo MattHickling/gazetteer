@@ -97,7 +97,7 @@ $('#countries').on('change', function () {
             geometry: response
           }, {
             style: function () {
-              return{color: 'blue'};
+              return{color: 'blue', weight: 5};
             }
           }).bindPopup(function (layer) {
             return layer.feature.properties.response;
@@ -150,15 +150,14 @@ $('#countries').on('change', function () {
 
           console.log("Button with id='weatherForecast' selected successfully");
           $('#weatherForecast').on('click', function () {
-            // Get the latitude and longitude of the marker
-            const iso_code = $('#countries').val();
+            // Get the selected country name
             const countryName = $('#countries option:selected').text();
           
           
             // Make an AJAX call to get the weather information
             $.ajax({
               url: 'libs/php/getWeather.php',
-              type: 'POST',
+              type: 'GET',
               dataType: 'json',
               data: {
                 country: countryName
@@ -166,23 +165,28 @@ $('#countries').on('change', function () {
               success: function (response) {
                 console.log(response);
           
-                // Update the modal with the weather information
-                // $('#currentTemp').text(response.currentTemp);
-                // $('#minTemp').text(response.minTemp);
-                // $('#maxTemp').text(response.maxTemp);
-                // $('#weatherDesc').text(response.weatherDesc);
-                // $('#forecast').empty();
-                // response.forecast.forEach(function (day) {
-                //   $('#forecast').append(`<li>${day.date}: ${day.temp} (${day.desc})</li>`);
-                // });
-          
-                // Show the modal
-                $('#weatherModal').modal('show');
+                $('#currentTemp').text(Math.round(response.currentTemp) + "°C");
+                $('#minTemp').text(Math.round(response.minTemp) + "°C");
+                $('#maxTemp').text(Math.round(response.maxTemp) + "°C");         
+                $('#weatherDesc').text(response.weatherDesc);
+                $('#weatherIcon').attr('src', response.weatherIcon);
+                $('#forecast').empty();
+                response.forecast.forEach(function (day) {
+                  const tempInCelsius = Math.round(day.temp);
+                  const tempString = tempInCelsius >= 10 ? tempInCelsius.toString() : "0" + tempInCelsius.toString();
+                  $('#forecast').append(`<li>${day.date}: ${tempString}°C (${day.desc})</li>`);
+                });
+                
+                console.log(response.weatherIcon); 
+                $('#weather').modal('show');
               },
               error: function (jqXHR, textStatus, errorThrown) {
                 alert(errorThrown + ' ' + jqXHR + ' ' + textStatus);
               }
             });
+          });
+          $(document).on('click', '#getWeatherClose', function() {
+            $('#weather').modal('hide');
           });
         }})
       }})
