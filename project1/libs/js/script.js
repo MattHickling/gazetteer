@@ -79,6 +79,7 @@ $('#countries').on('change', function () {
       let lng = response.data.lng;
       console.log(response);
     
+       
       map.setView([lat, lng], 6);
       marker.setLatLng([lat, lng]);
 
@@ -116,11 +117,13 @@ $('#countries').on('change', function () {
                 iso_code: iso_code,
               },
               success: function (data) {
+        
                 // Update the modal with the country name, capital city, and population
                 $('#country').text(data.name);
                 $('#capitalCity').text(data.capital);
                 $('#population').text(data.population);
-                
+
+          
                 $.ajax({
                   url: 'libs/php/getCountryFlag.php',
                   type: 'GET',
@@ -152,7 +155,7 @@ $('#countries').on('change', function () {
           $('#weatherForecast').on('click', function () {
             // Get the selected country name
             const countryName = $('#countries option:selected').text();
-          
+           
           
             // Make an AJAX call to get the weather information
             $.ajax({
@@ -162,6 +165,8 @@ $('#countries').on('change', function () {
               data: {
                 country: countryName
               },
+              
+              
               success: function (response) {
                 console.log(response);
           
@@ -189,5 +194,94 @@ $('#countries').on('change', function () {
             $('#weather').modal('hide');
           });
         }})
+
+        $('#currency').on('click', function () {
+       
+        
+          // Make an AJAX call to get the currency information
+          $.ajax({
+            url: 'libs/php/getCurrency.php',
+            type: 'POST',
+            data: {
+              iso_code: iso_code,
+            },
+            success: function (data) {
+              console.log(data);
+            
+              const obj = JSON.parse(data);
+            
+              console.log(obj.new_amount); // Output: 0.95
+              console.log(obj.new_currency); // Output: "EUR"
+              console.log(obj.old_currency); // Output: "USD"
+              console.log(obj.old_amount);
+            
+              // Extract new_amount and new_currency from the data object
+              let newAmount = obj.new_amount;
+              let newCurrency = obj.new_currency;
+              let currencyCode = obj.old_currency;
+              let baseRate = "1 " + currencyCode;
+              let oldAmount = obj.old_amount;
+            
+              // Update the modal with the new amount and new currency
+              $('#newCurrency').text(newCurrency);
+              $('#newAmount').text(newAmount);
+              $('#currencyName').text(currencyCode);
+              $('#currencyCode').text(currencyCode);
+              $('#baseRate').text(baseRate);
+              $('#oldAmount').text(oldAmount);
+            
+              // Update the exchange rate in the modal
+              let exchangeRateText = "1 " + currencyCode + " = " + newAmount + " " + newCurrency;
+              $('#exchangeRate').text(exchangeRateText);
+            
+              console.log($('#exchangeRate').text(), $('#currencyName').text());
+            
+              // Show the modal
+              $('#currencyModal').modal('show');
+          },
+            
+            error: function (jqXHR, textStatus, errorThrown) {
+              alert(errorThrown + ' ' + jqXHR + ' ' + textStatus);
+            }
+          });
+        });
+        
+        $(document).on('click', '#getCurrencyClose', function() {
+          $('#currency').modal('hide');
+
+        });
+        $('#wiki').on('click', function() {
+          // Get the selected country name
+          const countryName = $('#countries option:selected').text();
+          const iso_code = $('#countries').val();
+          
+          // Make an AJAX call to retrieve the Wikipedia page
+          $.ajax({
+            url: 'libs/php/getWikipedia.php',
+            method: 'GET',
+            data: {
+              iso_code: iso_code
+            },
+            success: function(data) {
+              var wikiUrl = data.replace("<br>", "/");
+              // Display the Wikipedia page in a new window
+              console.log(iso_code);
+              // Show the modal
+              console.log(data);
+              $('#wikiModal #wikiFrame').attr('src', wikiUrl);
+
+              $('#wikiModal').modal('show');
+            },
+            
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.log('Error: ' + textStatus + ' - ' + errorThrown);
+            }
+          });
+          
+        });
+        $(document).on('click', '#getWikiClose', function() {
+          $('#wikiModal').modal('hide');
+
+        });
       }})
     })

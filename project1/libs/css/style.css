@@ -176,3 +176,8 @@ button#weatherForecast.btn.btn-primary {
   width: 6em;
   height: 5rem;
 }
+
+div.modal-content {
+  max-width: 800px; /* set the maximum width for the modal dialog */
+  width: 90%; /* set the width to 90% of the available space */
+}

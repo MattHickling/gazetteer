@@ -2,6 +2,7 @@
 // get selected country from AJAX request
 $country = $_GET['country'];
 
+
 // send cURL request to REST Countries API to retrieve latitude and longitude of selected country
 $restUrl = 'https://restcountries.com/v2/name/' . urlencode($country) . '?fullText=true&fields=latlng';
 $restCurl = curl_init($restUrl);
