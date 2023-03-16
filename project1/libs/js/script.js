@@ -263,15 +263,22 @@ $('#countries').on('change', function () {
               iso_code: iso_code
             },
             success: function(data) {
-              var wikiUrl = data.replace("<br>", "/");
+              // Get the selected country name
+              const countryName = $('#countries option:selected').text();
+              
+              // Construct the Wikipedia URL for the selected country
+              var wikiUrl = data.replace("<br>", "/") + encodeURIComponent(countryName);
+              
               // Display the Wikipedia page in a new window
               console.log(iso_code);
               // Show the modal
               console.log(data);
               $('#wikiModal #wikiFrame').attr('src', wikiUrl);
-
+              $('#wikiModal .modal-title').text(countryName + ' - Wikipedia');
+            
               $('#wikiModal').modal('show');
             },
+            
             
             error: function(jqXHR, textStatus, errorThrown) {
               console.log('Error: ' + textStatus + ' - ' + errorThrown);
@@ -283,5 +290,51 @@ $('#countries').on('change', function () {
           $('#wikiModal').modal('hide');
 
         });
-      }})
-    })
+        $('#news').on('click', function() {
+          // Get the selected ISO code
+          const iso_code = $('#countries').val();
+          
+          // Make the AJAX request to get the news headlines
+          $.ajax({
+            url: 'libs/php/getNews.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+              iso_code: iso_code,
+            },
+            success: function (data) {
+              // Clear the existing news
+              $('#newsModal .modal-body').empty();
+              
+              // Add each headline to the modal body
+              data.forEach(function (article) {
+                const title = article.title;
+                const description = article.description;
+                const imageUrl = article.image;
+                const url = article.url;
+        
+                // Create a link to the article
+                const link = $('<a>').attr('href', url).attr('target', '_blank').html(`<h5>${title}</h5>`);
+        
+                // Create an image tag
+                const image = $('<img>').attr('src', imageUrl).attr('alt', title).addClass('img-fluid');
+        
+                // Append the link and image to the modal body
+                $('#newsModal .modal-body').append(link).append(description).append(image).append($('<hr>'));
+              });
+              
+              // Show the modal
+              $('#newsModal').modal('show');
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              alert(errorThrown + ' ' + jqXHR + ' ' + textStatus);
+            }
+          });
+        });
+        
+      
+        
+      }});
+      
+      })
+    
