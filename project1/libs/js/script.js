@@ -337,4 +337,3 @@ $('#countries').on('change', function () {
       }});
       
       })
-    
