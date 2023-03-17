@@ -1,43 +1,46 @@
 <?php
 
-$iso_code = $_POST['iso_code'];
+// Set your API key and the 2 character ISO code for the country you want to get news from
+$apiKey = '0144c3ed9bf94eef8b01e9df62e838c5';
+$isoCode = $_GET["iso_code"];
 
-$curl = curl_init();
+// Load the countryBorders.geo.json file
+$geoJson = file_get_contents('./countryBorders.geo.json');
 
-curl_setopt_array($curl, [
-    CURLOPT_URL => "https://api.newscatcherapi.com/v2/latest_headlines?lang=en&countries=" . $iso_code . "&topic=business",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_ENCODING => "",
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "GET",
-    CURLOPT_HTTPHEADER => [
-        "x-api-key: Jtnrm4v2Ovp7Zfa6pakR5f_7etNnj94x-Kg_G0A3dQI"
-    ],
-]);
+// Decode the JSON into a PHP array
+$geoData = json_decode($geoJson, true);
 
-$response = curl_exec($curl);
-$err = curl_error($curl);
+// Search for the country that matches the ISO code
+$countryName = '';
+foreach ($geoData['features'] as $feature) {
+  if ($feature['properties']['iso_a2'] === $isoCode) {
+    $countryName = $feature['properties']['name'];
+    break;
+  }
+}
 
-curl_close($curl);
+// If no country was found, display an error message
+if (empty($countryName)) {
+  echo 'Country not found.';
+  exit;
+}
 
-if ($err) {
-    echo json_encode(["error" => "cURL Error #:" . $err]);
-} else {
-    $data = json_decode($response, true);
-    $result = [];
+// Use the News API to get the top headlines from the specified country
+$url = "https://newsapi.org/v2/top-headlines?country={$isoCode}&apiKey={$apiKey}";
+$response = file_get_contents($url);
+$newsData = json_decode($response, true);
 
-    foreach ($data['articles'] as $article) {
-        $result[] = [
-          'title' => $article['title'],
-          'description' => $article['description'],
-          'image' => $article['media'] ?? '',
-          'url' => $article['link'],
-        ];
-      }
-      
+// Check if the API returned any data
+if ($newsData['status'] !== 'ok') {
+    echo "Error getting news for {$countryName}: {$newsData['message']}";
+    exit;
+  }
 
-    echo json_encode($result);
+// Display the news articles
+echo "<h1>Latest news from {$countryName}</h1>";
+foreach ($newsData['articles'] as $article) {
+  echo "<h2>{$article['title']}</h2>";
+  echo "<p>{$article['description']}</p>";
+  echo "<a href=\"{$article['url']}\">Read more</a>";
+  echo "<hr>";
 }
