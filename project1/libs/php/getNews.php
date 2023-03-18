@@ -1,46 +1,64 @@
+
 <?php
-
-// Set your API key and the 2 character ISO code for the country you want to get news from
-$apiKey = '0144c3ed9bf94eef8b01e9df62e838c5';
-$isoCode = $_GET["iso_code"];
-
-// Load the countryBorders.geo.json file
-$geoJson = file_get_contents('./countryBorders.geo.json');
-
-// Decode the JSON into a PHP array
-$geoData = json_decode($geoJson, true);
-
-// Search for the country that matches the ISO code
-$countryName = '';
-foreach ($geoData['features'] as $feature) {
-  if ($feature['properties']['iso_a2'] === $isoCode) {
-    $countryName = $feature['properties']['name'];
-    break;
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  if (!isset($_GET['iso_code'])) {
+      echo 'Missing ISO code parameter';
+      exit;
   }
+  
+  $iso_code = $_GET['iso_code'];
+  // rest of the code
 }
-
-// If no country was found, display an error message
-if (empty($countryName)) {
-  echo 'Country not found.';
+elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (!isset($_POST['iso_code'])) {
+      echo 'Missing ISO code parameter';
+      exit;
+  }
+  
+  $iso_code = $_POST['iso_code'];
+  // rest of the code
+}
+else {
+  echo 'Unsupported HTTP method';
   exit;
 }
+$api_key = "0144c3ed9bf94eef8b01e9df62e838c5";
+$url = "https://newsapi.org/v2/top-headlines?country={$iso_code}&apiKey={$api_key}&language=en&pageSize=10";
 
-// Use the News API to get the top headlines from the specified country
-$url = "https://newsapi.org/v2/top-headlines?country={$isoCode}&apiKey={$apiKey}";
-$response = file_get_contents($url);
-$newsData = json_decode($response, true);
 
-// Check if the API returned any data
-if ($newsData['status'] !== 'ok') {
-    echo "Error getting news for {$countryName}: {$newsData['message']}";
-    exit;
-  }
+// Initialize cURL
+$curl = curl_init();
 
-// Display the news articles
-echo "<h1>Latest news from {$countryName}</h1>";
-foreach ($newsData['articles'] as $article) {
-  echo "<h2>{$article['title']}</h2>";
-  echo "<p>{$article['description']}</p>";
-  echo "<a href=\"{$article['url']}\">Read more</a>";
-  echo "<hr>";
-}
+// Set the cURL options
+curl_setopt($curl, CURLOPT_URL, $url);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+  'User-Agent: YourApp/1.0'
+));
+
+// Execute the cURL request
+$response = curl_exec($curl);
+
+// Close the cURL session
+curl_close($curl);
+
+// Decode the response JSON
+$data = json_decode($response);
+// Debugging statements
+// var_dump($response);
+// var_dump($data);
+
+
+// Output the response as JSON
+header('Content-Type: application/json');
+echo json_encode(array_map(function ($article) {
+  return [
+      'title' => $article->title,
+      'author' => $article->author,
+      'publishedAt' => $article->publishedAt,
+      'url' => $article->url
+  ];
+}, $data->articles));
+
+
+?>

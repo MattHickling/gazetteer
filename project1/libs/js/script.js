@@ -1,4 +1,4 @@
-  let map = L.map("map", { attributionControl: false }).setView([0, 0], 9);
+  let map = L.map("map", { attributionControl: false });
 
   const tile = L.tileLayer(
     "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
@@ -49,7 +49,10 @@
       console.error("Could not create marker");
       return;
     }
+
+    map.setView([lat, lng], 9);
   }
+
 
   function error(err) {
     if (err.code === 1) {
@@ -60,6 +63,7 @@
   }
 
   navigator.geolocation.getCurrentPosition(success, error);
+  
   let geojsonLayer = L.geoJSON();
 
   let polygonLayer;
@@ -303,57 +307,62 @@
     });
 
     //retrieves the news articles for the news modal
-  $("#news").on("click", function () {
+    $("#news").on("click", function () {
       const iso_code = $("#countries").val();
+  
+      $.ajax({
+          url: "libs/php/getNews.php",
+          type: "POST",
+          dataType: "json",
+          data: {
+              iso_code: iso_code,
+          },
+          success: function (response) {
+            // Use the response data directly as an array of objects
+            const data = response;
+        
+            // Clear the existing news
+            $("#newsModalBody").empty();
 
-    $.ajax({
-      url: "libs/php/getNews.php",
-      type: "POST",
-      dataType: "json",
-      data: {
-        iso_code: iso_code,
-      },
-      success: function (data) {
-        console.log(data);
-        // Clear the existing news
-        $("#newsModal .modal-body").empty();
-
-    // Adds each headline to the modal body
-    data.forEach(function (article) {
-      const title = article.title;
-      const description = article.description;
-      const imageUrl = article.image;
-      const url = article.url;
-
-      // Creates a link to the article
-      const link = $("<a>")
-        .attr("href", url)
-        .attr("target", "_blank")
-        .html(`<h5>${title}</h5>`);
-
-      // Creates an image tag
-      const image = $("<img>")
-        .attr("src", imageUrl)
-        .attr("alt", title)
-        .addClass("img-fluid");
-
-      // Appends the link and image to the modal body
-      $("#newsModal .modal-body")
-        .append(link)
-        .append(description)
-        .append(image)
-        .append($("<hr>"));
-    });
-
-    // Show the modal
-    $("#newsModal").modal("show");
-  },
-
-        error: function (jqXHR, textStatus, errorThrown) {
-          alert(errorThrown + " " + jqXHR + " " + textStatus);
+            if (data.length === 0) {
+              $("#newsModalBody").text("No news for this country");
+              return;
+          }
+        
+          data.forEach(function (article) {
+            const title = article.title;
+            const author = article.author;
+            const publishedAt = article.publishedAt;
+            const link = $("<a>")
+                .attr("href", article.url)
+                .attr("target", "_blank")
+                .text(title); // Set the text content of the link to the article title
+        
+            // Create a div to hold the article information
+            const articleInfo = $("<div>")
+                .addClass("article-info")
+                .append(link) // Append the <a> element to the articleInfo div
+                .append($("<p>").html(`By ${author} | ${publishedAt}`));
+        
+            // Add a click event listener to the title to open the article in a new tab
+            articleInfo.find("a").on("click", function () {
+                window.open(article.url, "_blank");
+            });
+        
+            // Append the articleInfo div to the news modal body
+            $("#newsModalBody").append(articleInfo);
+        });
+        
+            // Show the modal
+            $("#newsModal").modal("show");
         },
+        
+          error: function (jqXHR, textStatus, errorThrown) {
+              alert(errorThrown + " " + jqXHR + " " + textStatus);
+          },
       });
-    });
-  },
   });
-  });
+  
+    
+    }}
+    )})
