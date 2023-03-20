@@ -1,4 +1,4 @@
-  let map = L.map("map", { attributionControl: false });
+let map = L.map("map", { attributionControl: false });
 
   const tile = L.tileLayer(
     "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
@@ -29,29 +29,64 @@
           `<option value="${data.code}">${data.name}</option>`
         );
       });
+      navigator.geolocation.getCurrentPosition(success, error);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert(errorThrown + " " + jqXHR + " " + textStatus);
     },
   });
 
-  function success(position) {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
-    const accuracy = position.coords.accuracy;
+  map.setView([0, 0], 9);
+  // function success(position) {
+  //   const lat = position.coords.latitude;
+  //   const lng = position.coords.longitude;
+  //   const accuracy = position.coords.accuracy;
+    // console.log(latitude, longitude);
 
-    marker = L.marker([lat, lng], { icon: youAreHere })
-      .addTo(map)
-      .bindPopup("You are here")
-      .openPopup();
 
-    if (!marker) {
-      console.error("Could not create marker");
-      return;
+    function success(pos) {
+      function reverseGeocode() {
+        $.ajax({
+          url: "libs/php/getLatLng.php",
+          method: "POST",
+          dataType: "json",
+          data: {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+          },
+          success: function (data) {
+            console.log(data);
+            var geoCountryCode = data.results[0].components["ISO_3166-1_alpha-2"];
+            $("#countries").val(geoCountryCode).trigger("change");
+          },
+          error: function (jqXHR, textStatus, errorThrown) {},
+        });
+      }
+    
+      const geoLatitude = pos.coords.latitude;
+      const geoLongitude = pos.coords.longitude;
+    
+      reverseGeocode(geoLatitude, geoLongitude);
     }
 
-    map.setView([lat, lng], 9);
-  }
+
+
+
+
+
+
+    // marker = L.marker([lat, lng], { icon: youAreHere })
+    //   .addTo(map)
+    //   .bindPopup("You are here")
+    //   .openPopup();
+
+    // if (!marker) {
+    //   console.error("Could not create marker");
+    //   return;
+    // }
+
+
+  
 
 
   function error(err) {
@@ -62,7 +97,7 @@
     }
   }
 
-  navigator.geolocation.getCurrentPosition(success, error);
+
   
   let geojsonLayer = L.geoJSON();
 
@@ -91,7 +126,7 @@
               console.log(response);
 
       map.setView([lat, lng], 6);
-      marker.setLatLng([lat, lng]);
+      // marker.setLatLng([lat, lng]);
 
     $.ajax({
       url: "libs/php/getCountryPolygon.php?iso_code=" + iso_code,
