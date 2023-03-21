@@ -1,5 +1,6 @@
 let map = L.map("map", { attributionControl: false });
 
+
   const tile = L.tileLayer(
     "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     {
@@ -9,10 +10,12 @@ let map = L.map("map", { attributionControl: false });
     }
   ).addTo(map);
 
-  let youAreHere = L.icon({
-    iconUrl: "libs/images/marker-icon.png",
-    iconSize: [10, 15],
-  });
+  // let youAreHere = L.icon({
+  //   iconUrl: "libs/images/marker-icon.png",
+  //   iconSize: [10, 15],
+  // });
+
+  // console.log(youAreHere);
 
   //select list
   let countries = [];
@@ -45,6 +48,7 @@ let map = L.map("map", { attributionControl: false });
 
 
     function success(pos) {
+
       function reverseGeocode() {
         $.ajax({
           url: "libs/php/getLatLng.php",
@@ -55,9 +59,12 @@ let map = L.map("map", { attributionControl: false });
             longitude: pos.coords.longitude,
           },
           success: function (data) {
-            console.log(data);
             var geoCountryCode = data.results[0].components["ISO_3166-1_alpha-2"];
             $("#countries").val(geoCountryCode).trigger("change");
+
+            // getNearbyCities();
+            // getAirports();
+
           },
           error: function (jqXHR, textStatus, errorThrown) {},
         });
@@ -103,14 +110,23 @@ let map = L.map("map", { attributionControl: false });
 
   let polygonLayer;
 
+  // Define cityMarkers and countryMarkers layer groups
+let cityMarkers = L.layerGroup().addTo(map);
+let countryMarkers;
+
   $("#countries").on("change", function () {
     let iso_code = $(this).val();
     let countryName = $(this).find("option:selected").text();
+
+    // Remove existing cityMarkers layer group
+  cityMarkers.clearLayers();
+
     // Remove existing polygon layer
     if (polygonLayer) {
       map.removeLayer(polygonLayer);
     }
 
+  
     //Sets the map
     $.ajax({
       url: "libs/php/getRestCountryInfo.php",
@@ -123,10 +139,15 @@ let map = L.map("map", { attributionControl: false });
     success: function (response) {
       let lat = response.data.lat;
       let lng = response.data.lng;
+      getNearbyCities();
+      getWeather();
               console.log(response);
 
       map.setView([lat, lng], 6);
       // marker.setLatLng([lat, lng]);
+
+       // Create new countryMarkers layer group
+       countryMarkers = L.layerGroup().addTo(map);
 
     $.ajax({
       url: "libs/php/getCountryPolygon.php?iso_code=" + iso_code,
@@ -155,6 +176,8 @@ let map = L.map("map", { attributionControl: false });
         .addTo(map);
 
           map.fitBounds(polygonLayer.getBounds());
+
+        
 
           // retrieves the conutry name, capital city and population
    $("#countryName").on("click", function () {
@@ -251,6 +274,7 @@ let map = L.map("map", { attributionControl: false });
         },
       });
 
+      function getWeather(){
   //currency information
   $("#currency").on("click", function () {
     $.ajax({
@@ -303,7 +327,7 @@ let map = L.map("map", { attributionControl: false });
     $(document).on("click", "#getCurrencyClose", function () {
       $("#currency").modal("hide");
     });
-
+  }
     //retrieves the wiki page
     $("#wiki").on("click", function () {
       const countryName = $("#countries option:selected").text();
@@ -401,3 +425,58 @@ let map = L.map("map", { attributionControl: false });
     
     }}
     )})
+
+
+    // $(document).ready(function () {
+    //   let greenMarker = L.ExtraMarkers.icon({
+    //     icon: 'fa-coffee',
+    //     markerColor: 'blue',
+    //     shape: 'circle',
+    //     prefix: 'fa'
+      // });
+    
+  // console.log(greenMarker);
+  function getNearbyCities() {
+    let iso_code = $("#countries").val();
+
+    $.ajax({
+        url: "libs/php/getCityMarker.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            iso_code: iso_code,
+        },
+        success: function (data) {
+            let cityMarkers = L.markerClusterGroup();
+
+            // Define the custom icon options
+            let iconOptions = {
+                icon: "fa-building",
+                markerColor: "red",
+                prefix: "fa",
+                shape: "circle",
+                iconSize: [30, 30],
+            };
+
+            data.geonames.forEach(function (city, index) {
+                // Create a new ExtraMarkers icon with a number label
+                let icon = L.ExtraMarkers.icon({
+                    ...iconOptions,
+                    number: index + 1,
+                });
+
+                let marker = L.marker([city.lat, city.lng], { icon });
+                marker.bindPopup(city.name);
+                cityMarkers.addLayer(marker);
+            });
+
+            cityMarkers.addTo(map);
+            map.addControl(L.control.layers(null, { Cities: cityMarkers }));
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert(errorThrown + " " + jqXHR + " " + textStatus);
+        },
+       } )  } ;
+
+
+    
