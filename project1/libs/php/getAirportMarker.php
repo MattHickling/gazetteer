@@ -1,31 +1,46 @@
 <?php
+// GeoNames API endpoint
+$url = 'http://api.geonames.org/searchJSON';
 
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
+// GeoNames API username
+$username = 'matt1883';
 
-	$executionStartTime = microtime(true);
+// Get the ISO country code from the POST request
+$iso_code = $_POST['iso_code'];
 
-	$url='http://api.geonames.org/searchJSON?country=' . $_REQUEST['iso_code'] . '&featureCode=airp&maxRows=30&username=matt1883';
+// Create a cURL handle
+$ch = curl_init();
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL,$url);
+// Set the cURL options
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+    'q' => 'airport',
+    'country' => $iso_code,
+    'username' => $username,
+]));
 
-	$result=curl_exec($ch);
+// Execute the cURL request and get the response
+$response = curl_exec($ch);
 
-	curl_close($ch);
+// Close the cURL handle
+curl_close($ch);
 
-	$decode = json_decode($result,true);	
+// Parse the JSON response
+$data = json_decode($response, true);
 
-	$output['status']['code'] = "200";
-	$output['status']['name'] = "ok";
-	$output['status']['description'] = "success";
-	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $decode;
-	
-	header('Content-Type: application/json; charset=UTF-8');
+// Extract the airport data from the response
+$airports = array_map(function($airport) {
+    return [
+        'name' => $airport['name'],
+        'lat' => $airport['lat'],
+        'lng' => $airport['lng'],
+    ];
+}, $data['geonames']);
 
-	echo json_encode($output); 
-
-?>
+// Return the airport data as JSON
+header('Content-Type: application/json');
+echo json_encode([
+    'airports' => $airports,
+]);

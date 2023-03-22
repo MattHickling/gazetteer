@@ -1,10 +1,9 @@
 <?php
-// get selected country from AJAX request
-$country = $_GET['country'];
-
+// get iso_code parameter from URL
+$iso_code = $_GET['iso_code'];
 
 // send cURL request to REST Countries API to retrieve latitude and longitude of selected country
-$restUrl = 'https://restcountries.com/v2/name/' . urlencode($country) . '?fullText=true&fields=latlng';
+$restUrl = 'https://restcountries.com/v2/alpha/' . $iso_code ;
 $restCurl = curl_init($restUrl);
 curl_setopt($restCurl, CURLOPT_RETURNTRANSFER, true);
 $restResult = curl_exec($restCurl);
@@ -14,8 +13,8 @@ curl_close($restCurl);
 $restData = json_decode($restResult, true);
 
 // extract latitude and longitude of selected country
-$lat = $restData[0]['latlng'][0];
-$lng = $restData[0]['latlng'][1];
+$lat = $restData['latlng'][0];
+$lng = $restData['latlng'][1];
 
 // send cURL request to OpenWeather API to retrieve weather information using latitude and longitude
 $weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=8b8b3b8efd5719cc409baad20eeec20a';

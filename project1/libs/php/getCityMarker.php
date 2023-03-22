@@ -3,7 +3,7 @@
 $iso_code = $_POST['iso_code'];
 
 // Build the API URL
-$url = "http://api.geonames.org/searchJSON?featureClass=P&country={$iso_code}&maxRows=50&username=matt1883";
+$url = "http://api.geonames.org/searchJSON?featureClass=P&country={$iso_code}&maxRows=100&username=matt1883";
 
 // Create a new cURL handle
 $ch = curl_init();
