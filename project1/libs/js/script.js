@@ -217,6 +217,10 @@ function getWeather(iso_code) {
           
         )
       });
+      $(document).on("click", "#weatherForecast", function () {
+        // getWeather(iso_code);
+        $("#weather").modal("show"); // Show the modal when the button is clicked
+      });
     },
 
   
