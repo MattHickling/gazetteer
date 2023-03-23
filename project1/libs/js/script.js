@@ -1,17 +1,17 @@
-let map = L.map("map", { attributionControl: false } );
+let map = L.map("map", { attributionControl: false });
 
+const tile = L.tileLayer(
+  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>',
+  }
+).addTo(map);
 
-  const tile = L.tileLayer(
-    "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>',
-    }
-  ).addTo(map);
+map.setView([0, 0], 9);
 
-  $(document).ready(function() {
- 
+$(document).ready(function() {
   //select list
   let countries = [];
 
@@ -27,43 +27,39 @@ let map = L.map("map", { attributionControl: false } );
           `<option value="${data.code}">${data.name}</option>`
         );
       });
-      navigator.geolocation.getCurrentPosition(success, error);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       alert(errorThrown + " " + jqXHR + " " + textStatus);
     },
   });
 
-  map.setView([0, 0], 9);
+  navigator.geolocation.getCurrentPosition(success, error);
 
-
-    function success(pos) {
-
-      function reverseGeocode() {
-        $.ajax({
-          url: "libs/php/getLatLng.php",
-          method: "POST",
-          dataType: "json",
-          data: {
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-          },
-          success: function (data) {
-            var geoCountryCode = data.results[0].components["ISO_3166-1_alpha-2"];
-            $("#countries").val(geoCountryCode).trigger("change");
-
-
-          },
-          error: function (jqXHR, textStatus, errorThrown) {},
-        });
-      }
-    
-      const geoLatitude = pos.coords.latitude;
-      const geoLongitude = pos.coords.longitude;
-    
-      reverseGeocode(geoLatitude, geoLongitude);
+  function success(pos) {
+    function reverseGeocode(latitude, longitude) {
+      $.ajax({
+        url: "libs/php/getLatLng.php",
+        method: "POST",
+        dataType: "json",
+        data: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+        success: function (data) {
+          var geoCountryCode = data.results[0].components["ISO_3166-1_alpha-2"];
+          $("#countries").val(geoCountryCode).trigger("change");
+          const marker = L.marker([latitude, longitude]).addTo(map);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {},
+      });
     }
-
+  
+    const geoLatitude = pos.coords.latitude;
+    const geoLongitude = pos.coords.longitude;
+  
+    reverseGeocode(geoLatitude, geoLongitude);
+  }
+  
 
   function error(err) {
     if (err.code === 1) {
@@ -73,209 +69,170 @@ let map = L.map("map", { attributionControl: false } );
     }
   }
 
-
   
-
-
-
-
 //-------------Changing countries------------------------------------
 
 let geojsonLayer = L.geoJSON();
 
 let polygonLayer;
 
-  $("#countries").on("change", function () {
-    let iso_code = $(this).val();
-    let countryName = $(this).find("option:selected").text();
-
+$("#countries").on("change", function () {
+  let iso_code = $(this).val();
+  let countryName = $(this).find("option:selected").text();
   
-    getNearbyCities();
-    getAirportMarkers();
+  // Call addCountryPolygon function to display country polygon
+  addCountryPolygon(iso_code);
+  
+  // Call other functions to get country information
+  
+  getCountryInfo(iso_code);
+  getWiki(iso_code);
+  getNews(iso_code);
+  getCurrency(iso_code);
+  getWeather(iso_code);
+  getNearbyCities();
+  getAirportMarkers();
 
-    // Remove existing polygon layer
-    if (polygonLayer) {
-      map.removeLayer(polygonLayer);
-    }
-
-    // clear all existing layers from the map except the maxZoom layer
-  map.eachLayer(function (layer) {
-  if (layer.options && layer.options.maxZoom !== undefined) {
-    return; 
+  // Remove existing polygon layer
+  if (polygonLayer) {
+    map.removeLayer(polygonLayer);
   }
-  map.removeLayer(layer);
-  });
+
+  // clear all existing layers from the map except the maxZoom layer
+  map.eachLayer(function (layer) {
+    if (layer.options && layer.options.maxZoom !== undefined) {
+      return; 
+    }
+    map.removeLayer(layer);
+  })
+});
 
 
 
+//------------polygon------------------------------------------------
 
-
-  
-//--------------creates polygon-------------------------------------------
-    $.ajax({
-      url: "libs/php/getRestCountryInfo.php",
-      type: "POST",
-      dataType: "json",
-      data: {
-        iso_code: iso_code,
-      },
-
+function addCountryPolygon(iso_code) {
+  $.ajax({
+    url: "libs/php/getCountryPolygon.php?iso_code=" + iso_code,
+    type: "GET",
+    dataType: "json",
     success: function (response) {
-      let lat = response.data.lat;
-      let lng = response.data.lng;
-     
-      
-              console.log(response);
+      console.log(response);
 
-      map.setView([lat, lng], 6);
-     
-    $.ajax({
-      url: "libs/php/getCountryPolygon.php?iso_code=" + iso_code,
-      type: "GET",
-      dataType: "json",
-        success: function (response) {
-          console.log(response);
-
-   // creates a new L.geoJSON layer with the geometry object
-        polygonLayer = L.geoJSON(
-            {
-        type: "Feature",
-        properties: {},
-        geometry: response,
+      // creates a new L.geoJSON layer with the geometry object
+      var polygonLayer = L.geoJSON(
+        {
+          type: "Feature",
+          properties: {},
+          geometry: response,
         },
-    
-          {
-            style: function () {
-              return { color: "blue", weight: 5 };
-                        },
-          }
-          )
+        {
+          style: function () {
+            return { color: "blue", weight: 5 };
+          },
+        }
+      )
         .bindPopup(function (layer) {
-         return layer.feature.properties.response;
-         })
+          return layer.feature.properties.response;
+        })
         .addTo(map);
 
-          map.fitBounds(polygonLayer.getBounds());
-
-        
-
-
-
-
-  //--------retrieves the conutry name, capital city and population-----------------------
-   $("#countryName").on("click", function () {
-      $.ajax({
-        url: "libs/php/getCountryInfo.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-            iso_code: iso_code,
-              },
-        success: function (data) {
-          $("#country").text(data.name);
-          $("#capitalCity").text(data.capital);
-          $("#population").text(data.population);
-
-                
+      map.fitBounds(polygonLayer.getBounds());
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    },
+  });
+}
 
 
-      
-    //------------retrieves the country flag-------------------
+
+  
+//--------------country info------------------------------------------
+function getCountryInfo(iso_code) {
+  $.ajax({
+    url: "libs/php/getCountryInfo.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      iso_code: iso_code,
+    },
+    success: function (data) {
+      $("#country").text(data.name);
+      $("#capitalCity").text(data.capital);
+      $("#population").text(data.population);
+
+      // retrieves the country flag
       $.ajax({
         url: "libs/php/getCountryFlag.php",
         type: "GET",
         data: { iso_code: iso_code },
         dataType: "json",
-          success: function (response) {
-  
-  
-            // Updates the flag image source with the URL from the JSON response
-    $("#flag").attr("src", response.flag_url);
-                  },
+        success: function (response) {
+          // Updates the flag image source with the URL from the JSON response
+          $("#flag").attr("src", response.flag_url);
+        },
         error: function (jqXHR, textStatus, errorThrown) {
           console.log("Error: " + textStatus + " - " + errorThrown);
-            },
-            });
-
-    $("#countryNameModal").modal("show");
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-        alert(errorThrown + " " + jqXHR + " " + textStatus);
         },
       });
-    });
 
-    $(document).on("click", "#countryNameClose", function () {
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert(errorThrown + " " + jqXHR + " " + textStatus);
+    },
+  });
+}
 
-    $("#countryNameModal").modal("hide");
-    });
 
 
-
-
-  
 
   //------------------retrieves the weatherforecast--------------------------------
-    console.log("Button with id='weatherForecast' selected successfully");
 
-         
-    $("#weatherForecast").on("click", function () {
-            // Get the selected country name
-    const countryName = $("#countries option:selected").text();
-    console.log(countryName);
-      console.log(iso_code);
-    // Make an AJAX call to get the weather information
-    $.ajax({
-      url: "libs/php/getWeather.php",
-      type: "GET",
-      dataType: "json",
-      data: {
-        iso_code: iso_code,
-        
-      },
+function getWeather(iso_code) {
+  $.ajax({
+    url: "libs/php/getWeather.php",
+    type: "GET",
+    dataType: "json",
+    data: {
+      iso_code: iso_code,
+    },
+    success: function (response) {
+      console.log(response);
+      $("#currentTemp").text(Math.round(response.currentTemp) + "°C");
+      $("#minTemp").text(Math.round(response.minTemp) + "°C");
+      $("#maxTemp").text(Math.round(response.maxTemp) + "°C");
+      $("#weatherDesc").text(response.weatherDesc);
+      $("#weatherIcon").attr("src", response.weatherIcon);
+      $("#forecast").empty();
+      response.forecast.forEach(function (day) {
+        const tempInCelsius = Math.round(day.temp);
+        const tempString =
+          tempInCelsius >= 10
+            ? tempInCelsius.toString()
+            : "0" + tempInCelsius.toString();
+        $("#forecast").append(
+          `<li>${day.date}: ${tempString}°C (${day.desc})</li>`
 
-      success: function (response, textStatus, jqXHR) {
-        console.log(response);
-        console.log(jqXHR);
-        console.log(jqXHR.responseText)
-        $("#currentTemp").text(Math.round(response.currentTemp) + "°C");
-        $("#minTemp").text(Math.round(response.minTemp) + "°C");
-        $("#maxTemp").text(Math.round(response.maxTemp) + "°C");
-        $("#weatherDesc").text(response.weatherDesc);
-        $("#weatherIcon").attr("src", response.weatherIcon);
-        $("#forecast").empty();
-        response.forecast.forEach(function (day) {
-          const tempInCelsius = Math.round(day.temp);
-          const tempString =
-            tempInCelsius >= 10
-              ? tempInCelsius.toString()
-              : "0" + tempInCelsius.toString();
-          $("#forecast").append(
-            `<li>${day.date}: ${tempString}°C (${day.desc})</li>`
-          );
-        });
-
-        console.log(response.weatherIcon);
-        $("#weather").modal("show");
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        alert(errorThrown + " " + jqXHR + " " + textStatus);
-      },
-    });
-  });
-  $(document).on("click", "#getWeatherClose", function () {
-    $("#weather").modal("hide");
-  });
-        },
+          
+        )
       });
+    },
 
+  
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert(errorThrown + " " + jqXHR + " " + textStatus);
+    },
+  });
+}
 
+$(document).on("click", "#getWeatherClose", function () {
+  $("#weather").modal("hide");
+});
 
-
-    
   //--------------------retrieves currency----------------------------------
 
-  $("#currency").on("click", function () {
+ function getCurrency(iso_code) {
     $.ajax({
       url: "libs/php/getCurrency.php",
       type: "POST",
@@ -314,14 +271,14 @@ let polygonLayer;
 
         console.log($("#exchangeRate").text(), $("#currencyName").text());
 
-        $("#currencyModal").modal("show");
       },
+      
 
       error: function (jqXHR, textStatus, errorThrown) {
         alert(errorThrown + " " + jqXHR + " " + textStatus);
       },
     });
-  });
+  }});
 
     $(document).on("click", "#getCurrencyClose", function () {
       $("#currency").modal("hide");
@@ -332,48 +289,42 @@ let polygonLayer;
 
 
   //---------------------retrieves the wiki page-----------------------------------------
-    $("#wiki").on("click", function () {
-      const countryName = $("#countries option:selected").text();
-      const iso_code = $("#countries").val();
+   
+  function getWiki(iso_code) {
+    $.ajax({
+      url: "libs/php/getWikipedia.php",
+      method: "GET",
+      data: {
+        iso_code: iso_code,
+      },
+      success: function (data) {
+    const countryName = $("#countries option:selected").text();
 
-      $.ajax({
-        url: "libs/php/getWikipedia.php",
-        method: "GET",
-        data: {
-          iso_code: iso_code,
-        },
-        success: function (data) {
-      const countryName = $("#countries option:selected").text();
+    // Constructs the Wikipedia URL for the selected country
+    let wikiUrl = data.replace("<br>", "/") + encodeURIComponent(countryName);
 
-      // Constructs the Wikipedia URL for the selected country
-      var wikiUrl =
-        data.replace("<br>", "/") + encodeURIComponent(countryName);
+    // console.log(iso_code);
 
-      // console.log(iso_code);
+    // console.log(data);
+    $("#wikiModal #wikiFrame").attr("src", wikiUrl);
+    $("#wikiModal .modal-title").text(countryName + " - Wikipedia");
 
-      // console.log(data);
-      $("#wikiModal #wikiFrame").attr("src", wikiUrl);
-      $("#wikiModal .modal-title").text(countryName + " - Wikipedia");
+  },
 
-      $("#wikiModal").modal("show");
-    },
-
-    error: function (jqXHR, textStatus, errorThrown) {
-      console.log("Error: " + textStatus + " - " + errorThrown);
-    },
-      });
+  error: function (jqXHR, textStatus, errorThrown) {
+    console.log("Error: " + textStatus + " - " + errorThrown);
+  },
     });
-    $(document).on("click", "#getWikiClose", function () {
-      $("#wikiModal").modal("hide");
-    });
-
+  };
+  $(document).on("click", "#getWikiClose", function () {
+    $("#wikiModal").modal("hide");
+  });
 
 
 
   //------------retrieves the news articles for the news modal----------------------------------
-    $("#news").on("click", function () {
-      const iso_code = $("#countries").val();
-  
+   function getNews(iso_code) {
+    
       $.ajax({
           url: "libs/php/getNews.php",
           type: "POST",
@@ -389,7 +340,7 @@ let polygonLayer;
             $("#newsModalBody").empty();
 
             if (data.length === 0) {
-              $("#newsModalBody").text("No news for this country");
+              $("#newsModalBody").text("Apologies, there is news feed availible for this country");
               return;
           }
         
@@ -417,17 +368,14 @@ let polygonLayer;
             $("#newsModalBody").append(articleInfo);
         });
         
-            // Show the modal
-            $("#newsModal").modal("show");
         },
         
           error: function (jqXHR, textStatus, errorThrown) {
               alert(errorThrown + " " + jqXHR + " " + textStatus);
           },
       });
-  });
-}}
-)})
+  };
+
    
 
     
@@ -600,4 +548,3 @@ airportGroup.addTo(map);
 //     });
 //   }
 // });
-  })

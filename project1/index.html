@@ -142,34 +142,31 @@
       <i class="fa-solid fa-cloud-sun-rain"></i>
     </button>
 
-    <!-- Modal -->
-    <div class="modal fade" id="weather" tabindex="-1" role="dialog" aria-labelledby="weatherTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal fade" id="weather" tabindex="-1" role="dialog" aria-labelledby="weatherModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="weatherTitle">Weather</h5>
+            <h5 class="modal-title" id="weatherModalLabel">Weather Forecast</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
           <div class="modal-body">
-            <div class="row">
-              <div class="col text-center">
-                <h4 id="modalWeather"></h4>
-                <img id="weatherIcon" alt="weather icon" src="">
-                <p><strong>Current Temperature: </strong><span id="currentTemp"></span></p>
-                <p> <strong>Minimum Temperature: </strong><span id="minTemp"></span></p>
-                <p> <strong>Maximum Temperature: </strong><span id="maxTemp"></span></p>
-                <p> <strong>Description: </strong><span id="weatherDesc"></span></p>
-                <p> <strong>5 Day Forecast: </strong><span id="forecast"></span></p>
-              </div>
-            </div>
-            <div class="row" id="forecast"></div>
+            <p>Current Temperature: <span id="currentTemp"></span></p>
+            <p>Minimum Temperature: <span id="minTemp"></span></p>
+            <p>Maximum Temperature: <span id="maxTemp"></span></p>
+            <p>Weather Description: <span id="weatherDesc"></span></p>
+            <img id="weatherIcon" src="" alt="Weather Icon">
+            <h5>5-Day Forecast:</h5>
+            <ul id="forecast"></ul>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="getWeatherClose" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="getWeatherClose">Close</button>
           </div>
         </div>
       </div>
     </div>
-
+    
   
 
 
