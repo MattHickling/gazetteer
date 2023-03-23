@@ -11,8 +11,7 @@ let map = L.map("map", { attributionControl: false } );
   ).addTo(map);
 
   $(document).ready(function() {
-    // Your jQuery code here
-  });
+ 
   //select list
   let countries = [];
 
@@ -102,10 +101,13 @@ let polygonLayer;
     // clear all existing layers from the map except the maxZoom layer
   map.eachLayer(function (layer) {
   if (layer.options && layer.options.maxZoom !== undefined) {
-    return; // skip the layer that sets maxZoom
+    return; 
   }
   map.removeLayer(layer);
   });
+
+
+
 
 
   
@@ -119,8 +121,6 @@ let polygonLayer;
       },
 
     success: function (response) {
-      getNearbyCities();
-      getAirportMarkers()
       let lat = response.data.lat;
       let lng = response.data.lng;
      
@@ -136,7 +136,7 @@ let polygonLayer;
         success: function (response) {
           console.log(response);
 
-          // creates a new L.geoJSON layer with the geometry object
+   // creates a new L.geoJSON layer with the geometry object
         polygonLayer = L.geoJSON(
             {
         type: "Feature",
@@ -159,6 +159,9 @@ let polygonLayer;
 
         
 
+
+
+
   //--------retrieves the conutry name, capital city and population-----------------------
    $("#countryName").on("click", function () {
       $.ajax({
@@ -174,6 +177,8 @@ let polygonLayer;
           $("#population").text(data.population);
 
                 
+
+
       
     //------------retrieves the country flag-------------------
       $.ajax({
@@ -204,6 +209,9 @@ let polygonLayer;
 
     $("#countryNameModal").modal("hide");
     });
+
+
+
 
   
 
@@ -261,6 +269,9 @@ let polygonLayer;
         },
       });
 
+
+
+
     
   //--------------------retrieves currency----------------------------------
 
@@ -317,6 +328,9 @@ let polygonLayer;
     });
 
 
+
+
+
   //---------------------retrieves the wiki page-----------------------------------------
     $("#wiki").on("click", function () {
       const countryName = $("#countries option:selected").text();
@@ -352,6 +366,9 @@ let polygonLayer;
     $(document).on("click", "#getWikiClose", function () {
       $("#wikiModal").modal("hide");
     });
+
+
+
 
   //------------retrieves the news articles for the news modal----------------------------------
     $("#news").on("click", function () {
@@ -513,73 +530,74 @@ var overlays = {
 
 var layerControl = L.control.layers(null, overlays).addTo(map);
 
+cityGroup.addTo(map);
+airportGroup.addTo(map);
+
 // // Set the "Cities" and "Airports" layers to be checked by default
 // layerControl.addOverlay(cityGroup, "Cities");
 // layerControl.addOverlay(airportGroup, "Airports");
 
-layerControl.on("baselayerchange", function (event) {
-  if (event.name === "Cities") {
-    cityGroup.addTo(map);
-    airportGroup.removeFrom(map);
-  } else if (event.name === "Airports") {
-    airportGroup.addTo(map);
-    cityGroup.removeFrom(map);
-  }
-});
+// layerControl.on("baselayerchange", function (event) {
+//   if (event.name === "Cities") {
+//     cityGroup.addTo(map);
+//     airportGroup.removeFrom(map);
+//   } else if (event.name === "Airports") {
+//     airportGroup.addTo(map);
+//     cityGroup.removeFrom(map);
+//   }
+// });
 
-layerControl.on("overlayadd", function (event) {
-  var layer = event.layer;
-  if (layer === cityGroup || layer === airportGroup) {
-    layer.eachLayer(function (marker) {
-      marker.setStyle({ opacity: 1 });
-    });
-  }
-});
+// layerControl.on("overlayadd", function (event) {
+//   var layer = event.layer;
+//   if (layer === cityGroup || layer === airportGroup) {
+//     layer.eachLayer(function (marker) {
+//       marker.setStyle({ opacity: 1 });
+//     });
+//   }
+// });
 
-layerControl.on("overlayremove", function (event) {
-  var layer = event.layer;
-  if (layer === cityGroup || layer === airportGroup) {
-    layer.eachLayer(function (marker) {
-      marker.setStyle({ opacity: 0 });
-    });
-  }
-});
+// layerControl.on("overlayremove", function (event) {
+//   var layer = event.layer;
+//   if (layer === cityGroup || layer === airportGroup) {
+//     layer.eachLayer(function (marker) {
+//       marker.setStyle({ opacity: 0 });
+//     });
+//   }
+// });
 
-$.when(getNearbyCities(), getAirportMarkers()).done(function () {
-  // Set the "Cities" and "Airports" layers to be checked by default
-  layerControl.addOverlay(cityGroup, "Cities");
-  layerControl.addOverlay(airportGroup, "Airports");
+// $.when(getNearbyCities(), getAirportMarkers()).done(function () {
+//   // Set the "Cities" and "Airports" layers to be checked by default
+//   layerControl.addOverlay(cityGroup, "Cities");
+//   layerControl.addOverlay(airportGroup, "Airports");
 
- 
-  cityGroup.addTo(map);
-  airportGroup.addTo(map);
 
   // Set the default selected layers
   // layerControl.setSelectedLayers([cityGroup, airportGroup]);
-});
+// });
 
 
-Object.keys(layerControl._layers).forEach(function (key) {
-  var layer = layerControl._layers[key].layer;
-  if (layer === cityGroup || layer === airportGroup) {
-    layerControl._map.addLayer(layer);
-  }
-});
+// Object.keys(layerControl._layers).forEach(function (key) {
+//   var layer = layerControl._layers[key].layer;
+//   if (layer === cityGroup || layer === airportGroup) {
+//     layerControl._map.addLayer(layer);
+//   }
+// });
 
-layerControl.on("add", function (event) {
-  var layer = event.layer;
-  if (layer === cityGroup || layer === airportGroup) {
-    layer.eachLayer(function (marker) {
-      marker.setStyle({ opacity: 1 });
-    });
-  }
-});
+// layerControl.on("add", function (event) {
+//   var layer = event.layer;
+//   if (layer === cityGroup || layer === airportGroup) {
+//     layer.eachLayer(function (marker) {
+//       marker.setStyle({ opacity: 1 });
+//     });
+//   }
+// });
 
-layerControl.on("remove", function (event) {
-  var layer = event.layer;
-  if (layer === cityGroup || layer === airportGroup) {
-    layer.eachLayer(function (marker) {
-      marker.setStyle({ opacity: 0 });
-    });
-  }
-});
+// layerControl.on("remove", function (event) {
+//   var layer = event.layer;
+//   if (layer === cityGroup || layer === airportGroup) {
+//     layer.eachLayer(function (marker) {
+//       marker.setStyle({ opacity: 0 });
+//     });
+//   }
+// });
+  })
