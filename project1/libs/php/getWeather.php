@@ -69,4 +69,4 @@ $response = array(
 
 // return JSON response to AJAX request
 echo json_encode($response);
-?>
+ ?>

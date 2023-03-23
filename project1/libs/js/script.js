@@ -76,17 +76,21 @@ let map = L.map("map", { attributionControl: false } );
 
 
   
-  let geojsonLayer = L.geoJSON();
 
-  let polygonLayer;
 
+
+
+//-------------Changing countries------------------------------------
+
+let geojsonLayer = L.geoJSON();
+
+let polygonLayer;
 
   $("#countries").on("change", function () {
     let iso_code = $(this).val();
     let countryName = $(this).find("option:selected").text();
 
-    // cityGroup.clearLayers();
-    // airportGroup.clearLayers();
+  
     getNearbyCities();
     getAirportMarkers();
 
@@ -96,16 +100,16 @@ let map = L.map("map", { attributionControl: false } );
     }
 
     // clear all existing layers from the map except the maxZoom layer
-map.eachLayer(function (layer) {
+  map.eachLayer(function (layer) {
   if (layer.options && layer.options.maxZoom !== undefined) {
     return; // skip the layer that sets maxZoom
   }
   map.removeLayer(layer);
-});
+  });
 
 
   
-    //Sets the map
+//--------------creates polygon-------------------------------------------
     $.ajax({
       url: "libs/php/getRestCountryInfo.php",
       type: "POST",
@@ -155,7 +159,7 @@ map.eachLayer(function (layer) {
 
         
 
-          // retrieves the conutry name, capital city and population
+  //--------retrieves the conutry name, capital city and population-----------------------
    $("#countryName").on("click", function () {
       $.ajax({
         url: "libs/php/getCountryInfo.php",
@@ -169,7 +173,9 @@ map.eachLayer(function (layer) {
           $("#capitalCity").text(data.capital);
           $("#population").text(data.population);
 
-                //retrieves the country flag
+                
+      
+    //------------retrieves the country flag-------------------
       $.ajax({
         url: "libs/php/getCountryFlag.php",
         type: "GET",
@@ -199,10 +205,12 @@ map.eachLayer(function (layer) {
     $("#countryNameModal").modal("hide");
     });
 
-       
+  
+
+  //------------------retrieves the weatherforecast--------------------------------
     console.log("Button with id='weatherForecast' selected successfully");
 
-          //retrieves the weatherforecast
+         
     $("#weatherForecast").on("click", function () {
             // Get the selected country name
     const countryName = $("#countries option:selected").text();
@@ -254,7 +262,8 @@ map.eachLayer(function (layer) {
       });
 
     
-  //currency information
+  //--------------------retrieves currency----------------------------------
+
   $("#currency").on("click", function () {
     $.ajax({
       url: "libs/php/getCurrency.php",
@@ -307,7 +316,8 @@ map.eachLayer(function (layer) {
       $("#currency").modal("hide");
     });
 
-    //retrieves the wiki page
+
+  //---------------------retrieves the wiki page-----------------------------------------
     $("#wiki").on("click", function () {
       const countryName = $("#countries option:selected").text();
       const iso_code = $("#countries").val();
@@ -319,7 +329,6 @@ map.eachLayer(function (layer) {
           iso_code: iso_code,
         },
         success: function (data) {
-      // Get the selected country name
       const countryName = $("#countries option:selected").text();
 
       // Constructs the Wikipedia URL for the selected country
@@ -344,7 +353,7 @@ map.eachLayer(function (layer) {
       $("#wikiModal").modal("hide");
     });
 
-    //retrieves the news articles for the news modal
+  //------------retrieves the news articles for the news modal----------------------------------
     $("#news").on("click", function () {
       const iso_code = $("#countries").val();
   
@@ -374,15 +383,15 @@ map.eachLayer(function (layer) {
             const link = $("<a>")
                 .attr("href", article.url)
                 .attr("target", "_blank")
-                .text(title); // Set the text content of the link to the article title
+                .text(title); 
         
-            // Create a div to hold the article information
+            
             const articleInfo = $("<div>")
                 .addClass("article-info")
-                .append(link) // Append the <a> element to the articleInfo div
+                .append(link)
                 .append($("<p>").html(`By ${author} | ${publishedAt}`));
         
-            // Add a click event listener to the title to open the article in a new tab
+          
             articleInfo.find("a").on("click", function () {
                 window.open(article.url, "_blank");
             });
@@ -400,14 +409,12 @@ map.eachLayer(function (layer) {
           },
       });
   });
-  
-    
-    }}
-    )})
+}}
+)})
    
 
     
-  // console.log(greenMarker);
+//----------Markers--------------------------------------------------------------------------
   function getNearbyCities() {
     let iso_code = $("#countries").val();
 
@@ -431,7 +438,7 @@ map.eachLayer(function (layer) {
           };
       
           data.geonames.forEach(function (city, index) {
-              // Create a new ExtraMarkers icon with a number label
+  
               let icon = L.ExtraMarkers.icon({
                   ...iconOptions,
                   number: index + 1,
@@ -442,9 +449,9 @@ map.eachLayer(function (layer) {
               cityMarkers.addLayer(marker);
           });
       
-          cityGroup.addLayer(cityMarkers); // update here
+          cityGroup.addLayer(cityMarkers); 
           cityMarkers.addTo(map);
-          // map.addControl(L.control.layers(null, { Cities: cityMarkers }));
+         
       },
       
         error: function (jqXHR, textStatus, errorThrown) {
@@ -468,7 +475,6 @@ map.eachLayer(function (layer) {
         success: function (data) {
           let airportMarkers = L.markerClusterGroup();
       
-          // Define the custom icon options
           let iconOptions = {
               icon: "fa-plane",
               markerColor: "blue",
@@ -478,7 +484,7 @@ map.eachLayer(function (layer) {
           };
       
           data.airports.forEach(function (airport) {
-              // Create a new ExtraMarkers icon
+          
               let icon = L.ExtraMarkers.icon(iconOptions);
       
               let marker = L.marker([airport.lat, airport.lng], { icon });
@@ -486,9 +492,9 @@ map.eachLayer(function (layer) {
               airportMarkers.addLayer(marker);
           });
           
-          airportGroup.addLayer(airportMarkers); // update here
+          airportGroup.addLayer(airportMarkers);
           airportMarkers.addTo(map);
-          // map.addControl(L.control.layers(null, { Airports: airportMarkers}));
+   
       },
       
         error: function (jqXHR, textStatus, errorThrown) {
@@ -544,12 +550,12 @@ $.when(getNearbyCities(), getAirportMarkers()).done(function () {
   layerControl.addOverlay(cityGroup, "Cities");
   layerControl.addOverlay(airportGroup, "Airports");
 
-  // Add the layers to the map
+ 
   cityGroup.addTo(map);
   airportGroup.addTo(map);
 
   // Set the default selected layers
-  layerControl.setSelectedLayers([cityGroup, airportGroup]);
+  // layerControl.setSelectedLayers([cityGroup, airportGroup]);
 });
 
 
@@ -577,7 +583,3 @@ layerControl.on("remove", function (event) {
     });
   }
 });
-
-
-
-

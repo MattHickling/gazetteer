@@ -1,5 +1,5 @@
 <?php
-$iso_code = $_GET['iso_code']; // Get the ISO code from the query parameter
+$iso_code = $_GET['iso_code']; 
 $url = 'https://restcountries.com/v2/alpha/' . $iso_code;
 
 $ch = curl_init();
