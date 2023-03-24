@@ -188,52 +188,51 @@ function getCountryInfo(iso_code) {
 
 
   //------------------retrieves the weatherforecast--------------------------------
-
-function getWeather(iso_code) {
-  $.ajax({
-    url: "libs/php/getWeather.php",
-    type: "GET",
-    dataType: "json",
-    data: {
-      iso_code: iso_code,
-    },
-    success: function (response) {
-      console.log(response);
-      $("#currentTemp").text(Math.round(response.currentTemp) + "°C");
-      $("#minTemp").text(Math.round(response.minTemp) + "°C");
-      $("#maxTemp").text(Math.round(response.maxTemp) + "°C");
-      $("#weatherDesc").text(response.weatherDesc);
-      $("#weatherIcon").attr("src", response.weatherIcon);
-      $("#forecast").empty();
-      response.forecast.forEach(function (day) {
-        const tempInCelsius = Math.round(day.temp);
-        const tempString =
-          tempInCelsius >= 10
-            ? tempInCelsius.toString()
-            : "0" + tempInCelsius.toString();
-        $("#forecast").append(
-          `<li>${day.date}: ${tempString}°C (${day.desc})</li>`
-
-          
-        )
-      });
-      $(document).on("click", "#weatherForecast", function () {
-        // getWeather(iso_code);
-        $("#weather").modal("show"); // Show the modal when the button is clicked
-      });
-    },
-
+  function getWeather(iso_code) {
+    $.ajax({
+      url: "libs/php/getWeather.php",
+      type: "GET",
+      dataType: "json",
+      data: {
+        iso_code: iso_code,
+      },
+      success: function (response) {
+        console.log(response);
+        $("#currentTemp").text(Math.round(response.currentTemp) + "°C");
+        $("#minTemp").text(Math.round(response.minTemp) + "°C");
+        $("#maxTemp").text(Math.round(response.maxTemp) + "°C");
+        $("#weatherDesc").text(response.weatherDesc);
+        $("#weatherIcon").attr("src", response.weatherIcon);
+        $("#forecast").empty();
+        response.forecast.forEach(function (day) {
+          const tempInCelsius = Math.round(day.temp);
+          const tempString =
+            tempInCelsius >= 10
+              ? tempInCelsius.toString()
+              : "0" + tempInCelsius.toString();
+          $("#forecast").append(
+            `<li>${day.date}: ${tempString}°C (${day.desc})</li>`
   
-    error: function (jqXHR, textStatus, errorThrown) {
-      alert(errorThrown + " " + jqXHR + " " + textStatus);
-    },
+            
+          )
+        });
+        $(document).on("click", "#weatherForecast", function () {
+          // getWeather(iso_code);
+          $("#weather").modal("show"); // Show the modal when the button is clicked
+        });
+      },
+  
+    
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown + " " + jqXHR + " " + textStatus);
+      },
+    });
+  }
+  
+  $(document).on("click", "#getWeatherClose", function () {
+    $("#weather").modal("hide");
   });
-}
-
-$(document).on("click", "#getWeatherClose", function () {
-  $("#weather").modal("hide");
-});
-
+  
   //--------------------retrieves currency----------------------------------
 
  function getCurrency(iso_code) {
@@ -327,58 +326,71 @@ $(document).on("click", "#getWeatherClose", function () {
 
 
   //------------retrieves the news articles for the news modal----------------------------------
-   function getNews(iso_code) {
-    
-      $.ajax({
-          url: "libs/php/getNews.php",
-          type: "POST",
-          dataType: "json",
-          data: {
-              iso_code: iso_code,
-          },
-          success: function (response) {
-            // Use the response data directly as an array of objects
-            const data = response;
-        
-            // Clear the existing news
-            $("#newsModalBody").empty();
+  function getNews(iso_code) {
+    $.ajax({
+      url: "libs/php/getNews.php",
+      type: "POST",
+      dataType: "json", // expect JSON data
+      data: {
+        iso_code: iso_code,
+       
+      },
 
-            if (data.length === 0) {
-              $("#newsModalBody").text("Apologies, there is news feed availible for this country");
-              return;
-          }
+      success: function (response) {
+        console.log(iso_code)
+        const data = response;
+  
+        $("#newsModalBody").empty();
+  
+        if (data.length === 0) {
+          $("#newsModalBody").text("Apologies, there is no news feed available for this country");
+          return;
+        }
+  
+        data.forEach(function (article) {
+          const title = article.title;
+          const author = article.author;
+          const publishedAt = article.publishedAt;
+          const description = article.description;
+          const imgUrl = article.image;
+          const url = article.url;
         
-          data.forEach(function (article) {
-            const title = article.title;
-            const author = article.author;
-            const publishedAt = article.publishedAt;
-            const link = $("<a>")
-                .attr("href", article.url)
-                .attr("target", "_blank")
-                .text(title); 
+          const link = $("<a>")
+            .attr("href", url)
+            .attr("target", "_blank")
+            .addClass("article-link")
+            .append(
+              $("<img>").attr("src", imgUrl)
+            )
+            .append(
+              $("<div>")
+                .addClass("article-text")
+                .append(
+                  $("<h5>").text(title)
+                )
+                .append(
+                  $("<p>").html(`By ${author} | ${publishedAt}`)
+                )
+                .append(
+                  $("<p>").text(description)
+                )
+            );
         
-            
-            const articleInfo = $("<div>")
-                .addClass("article-info")
-                .append(link)
-                .append($("<p>").html(`By ${author} | ${publishedAt}`));
+          link.on("click", function () {
+            window.open(url, "_blank");
+          });
         
-          
-            articleInfo.find("a").on("click", function () {
-                window.open(article.url, "_blank");
-            });
-        
-            // Append the articleInfo div to the news modal body
-            $("#newsModalBody").append(articleInfo);
+          $("#newsModalBody").append(link);
         });
-        
-        },
-        
-          error: function (jqXHR, textStatus, errorThrown) {
-              alert(errorThrown + " " + jqXHR + " " + textStatus);
-          },
-      });
-  };
+         
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert(errorThrown + " " + jqXHR + " " + textStatus);
+      },
+      
+    });
+  }
+  
 
    
 

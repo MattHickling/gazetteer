@@ -1,64 +1,35 @@
-
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  if (!isset($_GET['iso_code'])) {
-      echo 'Missing ISO code parameter';
-      exit;
-  }
-  
-  $iso_code = $_GET['iso_code'];
-  // rest of the code
-}
-elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (!isset($_POST['iso_code'])) {
-      echo 'Missing ISO code parameter';
-      exit;
-  }
-  
-  $iso_code = $_POST['iso_code'];
-  // rest of the code
-}
-else {
-  echo 'Unsupported HTTP method';
-  exit;
-}
-$api_key = "0144c3ed9bf94eef8b01e9df62e838c5";
-$url = "https://newsapi.org/v2/top-headlines?country={$iso_code}&apiKey={$api_key}&language=en&pageSize=10";
+header("Content-Type: application/json");
 
-
-// Initialize cURL
+$iso_code = $_GET['iso_code'];
+echo $iso_code;
 $curl = curl_init();
 
-// Set the cURL options
-curl_setopt($curl, CURLOPT_URL, $url);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-  'User-Agent: YourApp/1.0'
-));
+curl_setopt_array($curl, [
+    CURLOPT_URL => "https://gnews.io/api/v4/top-headlines?lang=en&country=" . $iso_code . "&token=e84aabd947884c050af00e3e26325ada",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "GET",
+    CURLOPT_HTTPHEADER => [
+        "Accept: application/json"
+    ],
+]);
 
-// Execute the cURL request
+
 $response = curl_exec($curl);
+$err = curl_error($curl);
 
-// Close the cURL session
 curl_close($curl);
 
-// Decode the response JSON
-$data = json_decode($response);
-// Debugging statements
-// var_dump($response);
-// var_dump($data);
-
-
-// Output the response as JSON
-header('Content-Type: application/json');
-echo json_encode(array_map(function ($article) {
-  return [
-      'title' => $article->title,
-      'author' => $article->author,
-      'publishedAt' => $article->publishedAt,
-      'url' => $article->url
-  ];
-}, $data->articles));
-
-
+if ($err) {
+    echo json_encode(array('error' => "cURL Error #:" . $err));
+} else {
+    $data = json_decode($response, true);
+    $articles = $data["articles"];
+    echo json_encode($articles);
+}
 ?>

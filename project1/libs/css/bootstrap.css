@@ -17,7 +17,7 @@
   --bs-teal: #20c997;
   --bs-cyan: #0dcaf0;
   --bs-black: #000;
-  --bs-white: #fff;
+  --bs-grey: #fff;
   --bs-gray: #6c757d;
   --bs-gray-dark: #343a40;
   --bs-gray-100: #f8f9fa;
@@ -69,7 +69,7 @@
   --bs-danger-border-subtle: #f1aeb5;
   --bs-light-border-subtle: #e9ecef;
   --bs-dark-border-subtle: #adb5bd;
-  --bs-white-rgb: 255, 255, 255;
+  --bs-grey-rgb: 255, 255, 255;
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
   --bs-body-bg-rgb: 255, 255, 255;
@@ -2599,7 +2599,7 @@ textarea.form-control-lg {
   overflow: hidden;
   text-align: start;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  grey-space: nowrap;
   pointer-events: none;
   border: var(--bs-border-width) solid transparent;
   transform-origin: 0 0;
@@ -2699,7 +2699,7 @@ textarea.form-control-lg {
   line-height: 1.5;
   color: var(--bs-body-color);
   text-align: center;
-  white-space: nowrap;
+  grey-space: nowrap;
   background-color: var(--bs-tertiary-bg);
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: 0.375rem;
@@ -3366,7 +3366,7 @@ textarea.form-control-lg {
 }
 
 .dropdown-toggle {
-  white-space: nowrap;
+  grey-space: nowrap;
 }
 .dropdown-toggle::after {
   display: inline-block;
@@ -3619,7 +3619,7 @@ textarea.form-control-lg {
   color: var(--bs-dropdown-link-color);
   text-align: inherit;
   text-decoration: none;
-  white-space: nowrap;
+  grey-space: nowrap;
   background-color: transparent;
   border: 0;
   border-radius: var(--bs-dropdown-item-border-radius, 0);
@@ -3649,7 +3649,7 @@ textarea.form-control-lg {
   margin-bottom: 0;
   font-size: 0.875rem;
   color: var(--bs-dropdown-header-color);
-  white-space: nowrap;
+  grey-space: nowrap;
 }
 
 .dropdown-item-text {
@@ -3941,7 +3941,7 @@ textarea.form-control-lg {
   font-size: var(--bs-navbar-brand-font-size);
   color: var(--bs-navbar-brand-color);
   text-decoration: none;
-  white-space: nowrap;
+  grey-space: nowrap;
 }
 .navbar-brand:hover, .navbar-brand:focus {
   color: var(--bs-navbar-brand-hover-color);
@@ -4787,7 +4787,7 @@ textarea.form-control-lg {
   line-height: 1;
   color: var(--bs-badge-color);
   text-align: center;
-  white-space: nowrap;
+  grey-space: nowrap;
   vertical-align: baseline;
   border-radius: var(--bs-badge-border-radius);
 }
@@ -4925,7 +4925,7 @@ textarea.form-control-lg {
   overflow: hidden;
   color: var(--bs-progress-bar-color);
   text-align: center;
-  white-space: nowrap;
+  grey-space: nowrap;
   background-color: var(--bs-progress-bar-bg);
   transition: var(--bs-progress-bar-transition);
 }
@@ -5324,7 +5324,7 @@ textarea.form-control-lg {
   --bs-btn-close-focus-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   --bs-btn-close-focus-opacity: 1;
   --bs-btn-close-disabled-opacity: 0.25;
-  --bs-btn-close-white-filter: invert(1) grayscale(100%) brightness(200%);
+  --bs-btn-close-grey-filter: invert(1) grayscale(100%) brightness(200%);
   box-sizing: content-box;
   width: 1em;
   height: 1em;
@@ -5353,12 +5353,12 @@ textarea.form-control-lg {
   opacity: var(--bs-btn-close-disabled-opacity);
 }
 
-.btn-close-white {
-  filter: var(--bs-btn-close-white-filter);
+.btn-close-grey {
+  filter: var(--bs-btn-close-grey-filter);
 }
 
 [data-bs-theme=dark] .btn-close {
-  filter: var(--bs-btn-close-white-filter);
+  filter: var(--bs-btn-close-grey-filter);
 }
 
 .toast {
@@ -5750,7 +5750,7 @@ textarea.form-control-lg {
   text-transform: none;
   letter-spacing: normal;
   word-break: normal;
-  white-space: normal;
+  grey-space: normal;
   word-spacing: normal;
   line-break: auto;
   font-size: var(--bs-tooltip-font-size);
@@ -5860,7 +5860,7 @@ textarea.form-control-lg {
   text-transform: none;
   letter-spacing: normal;
   word-break: normal;
-  white-space: normal;
+  grey-space: normal;
   word-spacing: normal;
   line-break: auto;
   font-size: var(--bs-popover-font-size);
@@ -7117,7 +7117,7 @@ textarea.form-control-lg {
   margin: -1px !important;
   overflow: hidden !important;
   clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
+  grey-space: nowrap !important;
   border: 0 !important;
 }
 
@@ -7134,7 +7134,7 @@ textarea.form-control-lg {
 .text-truncate {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  grey-space: nowrap;
 }
 
 .vr {
@@ -7492,9 +7492,9 @@ textarea.form-control-lg {
   border-color: rgba(var(--bs-dark-rgb), var(--bs-border-opacity)) !important;
 }
 
-.border-white {
+.border-grey {
   --bs-border-opacity: 1;
-  border-color: rgba(var(--bs-white-rgb), var(--bs-border-opacity)) !important;
+  border-color: rgba(var(--bs-grey-rgb), var(--bs-border-opacity)) !important;
 }
 
 .border-primary-subtle {
@@ -8390,11 +8390,11 @@ textarea.form-control-lg {
 }
 
 .text-wrap {
-  white-space: normal !important;
+  grey-space: normal !important;
 }
 
 .text-nowrap {
-  white-space: nowrap !important;
+  grey-space: nowrap !important;
 }
 
 /* rtl:begin:remove */
@@ -8449,9 +8449,9 @@ textarea.form-control-lg {
   color: rgba(var(--bs-black-rgb), var(--bs-text-opacity)) !important;
 }
 
-.text-white {
+.text-grey {
   --bs-text-opacity: 1;
-  color: rgba(var(--bs-white-rgb), var(--bs-text-opacity)) !important;
+  color: rgba(var(--bs-grey-rgb), var(--bs-text-opacity)) !important;
 }
 
 .text-body {
@@ -8469,7 +8469,7 @@ textarea.form-control-lg {
   color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.text-white-50 {
+.text-grey-50 {
   --bs-text-opacity: 1;
   color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -8587,9 +8587,9 @@ textarea.form-control-lg {
   background-color: rgba(var(--bs-black-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-white {
+.bg-grey {
   --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
+  background-color: rgba(var(--bs-grey-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-body {

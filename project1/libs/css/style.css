@@ -20,7 +20,7 @@ select#countries{
    height:33px;    
    z-index:999;  
    position: absolute;
-   background-color: grey;
+   background-color: blue;
    color: white;
    min-width: 160px;
    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);  
@@ -32,7 +32,7 @@ select#countries{
 
 button#countryName.btn.btn-primary{
  z-index: 999;
- background-color: grey;
+ background-color: blue;
  color: white;
  position:absolute;
  margin-top: 15%;
@@ -59,7 +59,7 @@ div#countryNameModal.modal.fade.show{
 
 button#currency.btn.btn-primary {
  z-index: 999;
- background-color: grey;
+ background-color: blue;
  color: white;
  position:absolute;
  margin-top: 20%;
@@ -71,7 +71,7 @@ button#currency.btn.btn-primary {
 
 button#wiki.btn.btn-primary {
  z-index: 999;
- background-color: grey;
+ background-color: blue;
  color: white;
  position:absolute;
  margin-top: 25%;
@@ -82,7 +82,7 @@ button#wiki.btn.btn-primary {
 
 button#news.btn.btn-primary {
  z-index: 999;
- background-color: grey;
+ background-color: blue;
  color: white;
  position:absolute;
  margin-top:30%;
@@ -94,7 +94,7 @@ button#news.btn.btn-primary {
 
 button#weatherForecast.btn.btn-primary {
  z-index: 999;
- background-color: grey;
+ background-color: blue;
  color: white;
  position:absolute;
  margin-top:35%;
@@ -108,26 +108,16 @@ button#weatherForecast.btn.btn-primary {
 .modal-body h5,
 .modal-body p {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 3rem;
+  font-size: 1rem; /* decrease the font size */
   color: #333;
 }
 
 .modal-header {
-  background-color: #f7f7f7;
+  background-color: grey;
   border-bottom: 1px solid #e5e5e5;
-  padding: 15px;
-  font-size: 1.5rem;
+  /* padding: 15px; */
+  font-size: 1rem; /* decrease the font size */
 }
-
-/* .modal-body {
-  padding: 20px;
-}
-.modal-body h5 {
-  margin-bottom: 15px;
-}
-.modal-body p {
-  margin-bottom: 10px;
-} */
 
 .modal-footer .btn-secondary {
   background-color: #007bff;
@@ -142,11 +132,11 @@ button#weatherForecast.btn.btn-primary {
   border: none;
 }
 
-
 .modal {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 20px; /* increase the margin */
 }
 
 .modal-body {
@@ -157,36 +147,118 @@ button#weatherForecast.btn.btn-primary {
 }
 
 .modal-body img {
+  max-width: 60%; /* increase the image size */
+  max-height: 50%; /* increase the image size */
+  margin-left: 10%; /* adjust the image margin */
+}
+
+.modal-dialog {
+  max-width: 90%; /* increase the dialog width */
+}
+
+.modal-title {
+  font-size: 1.5rem; /* increase the title size */
+}
+
+@media (max-width: 1096px) {
+  select#countries{
+    margin-right: 20%;
+  }
+  button#countryName.btn.btn-primary{
+    margin-top: 15%;
+  }
+  button#currency.btn.btn-primary {
+    margin-top: 25%;
+  }
+  button#wiki.btn.btn-primary{
+    margin-top: 35%;
+  }
+  button#news.btn.btn-primary{
+    margin-top: 45%;
+  }
+  button#weatherForecast.btn.btn-primary{
+    margin-top: 55%;
+  }
+
+
+}
+
+@media (max-width: 573px) {
+  select#countries {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    width: 100%;
+    z-index: 999;
+    background-color: grey;
+  }
+  button#countryName.btn.btn-primary{
+    margin-top: 20%;
+    background-color: grey;
+  }
+  button#currency.btn.btn-primary {
+    margin-top: 39%;
+    background-color: grey;
+  }
+  button#wiki.btn.btn-primary{
+    margin-top: 58%;
+    background-color: grey;
+  }
+  button#news.btn.btn-primary{
+    margin-top: 77%;
+    background-color: grey;
+  }
+  button#weatherForecast.btn.btn-primary{
+    margin-top: 96%;
+    background-color: grey;
+  }
+}
+
+.newsModal .modal-body {
   max-width: 100%;
-  height: auto;
+  overflow-x: auto;
+  font-size: 0.8rem; /* decrease the font size */
 }
 
-#countryNameModal .modal-dialog {
-  max-width: 80%;
-  height: 80%;
+a,
+.newsModal{
+  text-align: center;
+  font-size: 1.2rem; /* decrease the font size */
 }
 
-
-.modal-title,
-.modal-body h5,
-.modal-body p {
-  font-size: 2rem;
+p,
+.newsModal{
+  font-size: 0.8rem; /* decrease the font size */
 }
 
-#weatherIcon {
-  width: 6em;
-  height: 5rem;
+.modal-header {
+  z-index: 1000; /* increase the z-index */
 }
 
-div.modal-content {
-  max-width: 800px; /* set the maximum width for the modal dialog */
-  width: 90%; /* set the width to 90% of the available space */
+.modal-body {
+  position: relative;
+  /* margin-top: 100px; */
+  overflow-y: scroll;
+  max-height: 90vh; /* reduce the max-height value */
+  height: 100%;
+  margin-bottom: 0px;
+  /* padding: -100px; */
+  }
+
+.newsModal {
+  position: relative;
+  z-index: 1002; /* set a higher z-index */
 }
 
-a{
-  font-size: 2.2rem;
+#countryNameModal .modal-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-p{
-  font-size: .5rem;
+img#flag {
+  margin-left: 21%;
 }
+
