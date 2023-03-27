@@ -1,4 +1,7 @@
 <?php
+
+require_once 'config.php';
+
 // Set the Geonames API endpoint URL
 $url = 'http://api.geonames.org/countryInfoJSON';
 
@@ -6,7 +9,7 @@ $url = 'http://api.geonames.org/countryInfoJSON';
 $params = array(
     'lang' => 'en',
     'country' => $_POST['iso_code'],
-    'username' => 'matt1883', // Replace with your Geonames username
+    'username' => $geonames_key, // Replace with your Geonames username
 );
 
 // Initialize the cURL session

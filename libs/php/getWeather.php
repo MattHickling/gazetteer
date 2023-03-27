@@ -2,6 +2,9 @@
 // get iso_code parameter from URL
 $iso_code = $_GET['iso_code'];
 
+// include API key from config.php file
+require_once 'config.php';
+
 // send cURL request to REST Countries API to retrieve latitude and longitude of selected country
 $restUrl = 'https://restcountries.com/v2/alpha/' . $iso_code ;
 $restCurl = curl_init($restUrl);
@@ -17,7 +20,7 @@ $lat = $restData['latlng'][0];
 $lng = $restData['latlng'][1];
 
 // send cURL request to OpenWeather API to retrieve weather information using latitude and longitude
-$weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=8b8b3b8efd5719cc409baad20eeec20a';
+$weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=' . $API_KEY;
 $weatherCurl = curl_init($weatherUrl);
 curl_setopt($weatherCurl, CURLOPT_RETURNTRANSFER, true);
 $weatherResult = curl_exec($weatherCurl);
@@ -35,7 +38,7 @@ $weatherIcon = 'https://openweathermap.org/img/wn/' . $weatherData['weather'][0]
 
 
 // extract forecast information for next 5 days
-$forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=8b8b3b8efd5719cc409baad20eeec20a';
+$forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=' . $API_KEY;
 $forecastCurl = curl_init($forecastUrl);
 curl_setopt($forecastCurl, CURLOPT_RETURNTRANSFER, true);
 $forecastResult = curl_exec($forecastCurl);
@@ -69,4 +72,4 @@ $response = array(
 
 // return JSON response to AJAX request
 echo json_encode($response);
- ?>
+?>

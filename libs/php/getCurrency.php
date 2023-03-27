@@ -7,7 +7,7 @@ $executionStartTime = microtime(true);
 $iso_code = $_POST["iso_code"];
 
 
-$url = 'http://api.geonames.org/countryInfoJSON?formatted=true&country=' . $iso_code . '&username=matt1883';
+$url = 'http://api.geonames.org/countryInfoJSON?formatted=true&country=' . $iso_code . '&username=' . $geonames_key;
 
 
 $ch = curl_init();

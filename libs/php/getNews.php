@@ -1,12 +1,19 @@
 <?php
+
 header("Content-Type: application/json");
+
+// Include the config file
+require_once 'config.php';
 
 $iso_code = $_GET['iso_code'];
 echo $iso_code;
+
 $curl = curl_init();
 
+$url = "https://gnews.io/api/v4/top-headlines?lang=en&country=" . $iso_code . "&token=" . $NEWS_API;
+
 curl_setopt_array($curl, [
-    CURLOPT_URL => "https://gnews.io/api/v4/top-headlines?lang=en&country=" . $iso_code . "&token=e84aabd947884c050af00e3e26325ada",
+    CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_ENCODING => "",
@@ -32,4 +39,3 @@ if ($err) {
     $articles = $data["articles"];
     echo json_encode($articles);
 }
-?>

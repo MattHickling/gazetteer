@@ -1,9 +1,12 @@
 <?php
 
+require_once 'config.php';
+
+
 $iso_code = $_POST['iso_code'];
 
 
-$url = "http://api.geonames.org/searchJSON?featureClass=P&country={$iso_code}&maxRows=100&username=matt1883";
+$url = "http://api.geonames.org/searchJSON?featureClass=P&country={$iso_code}&maxRows=100&username=" . $geonames_key;
 
 
 $ch = curl_init();

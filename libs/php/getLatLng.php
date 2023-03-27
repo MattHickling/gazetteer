@@ -1,7 +1,7 @@
 <?php
 
 
-$apiKey = 'aa2b92718386464a8fb461ba54715c53'; 
+require_once 'config.php';
 
 $latitude = $_POST['latitude']; 
 $longitude = $_POST['longitude']; 
