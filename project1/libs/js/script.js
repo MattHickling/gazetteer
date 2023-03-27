@@ -1,3 +1,7 @@
+window.addEventListener('load', function() {
+  document.querySelector('.preloader').style.display = 'none';
+});
+
 let map = L.map("map", { attributionControl: false });
 
 const tile = L.tileLayer(
