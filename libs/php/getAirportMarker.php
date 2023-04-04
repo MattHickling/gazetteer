@@ -1,8 +1,10 @@
 <?php
 
+require_once 'config.php';
+
 $url = 'http://api.geonames.org/searchJSON';
 
-$username = 'matt1883';
+$username = $geonames_key;
 
 $iso_code = $_POST['iso_code'];
 
