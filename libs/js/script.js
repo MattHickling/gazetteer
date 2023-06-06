@@ -2,16 +2,20 @@ window.addEventListener('load', function() {
   document.querySelector('.preloader').style.display = 'none';
 });
 
-let map = L.map("map", { attributionControl: false });
+let map = L.map("map", { attributionControl: true });
 
-const tile = L.tileLayer(
-  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+const tile =  L.tileLayer(
+  "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
   {
-    maxZoom: 19,
+    maxZoom: 15,
     attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>',
+      'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
   }
 ).addTo(map);
+
+const satelliteTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
 
 map.setView([0, 0], 9);
 
@@ -24,7 +28,7 @@ $(document).ready(function() {
     url: "libs/php/getCountryList.php",
     dataType: "json",
     success: function (data) {
-      console.log(data);
+      // console.log(data);
       countries = data.countries.sort((a, b) => a.name.localeCompare(b.name));
       countries.forEach((data) => {
         $("#countries").append(
@@ -91,9 +95,11 @@ $("#countries").on("change", function () {
   
   getCountryInfo(iso_code);
   getWiki(iso_code);
+  console.log(iso_code)
   getNews(iso_code);
   getCurrency(iso_code);
   getWeather(iso_code);
+  getTimeZone(iso_code)
   getNearbyCities();
   getAirportMarkers();
 
@@ -102,14 +108,14 @@ $("#countries").on("change", function () {
     map.removeLayer(polygonLayer);
   }
 
-  // clear all existing layers from the map except the maxZoom layer
+  
   map.eachLayer(function (layer) {
     if (layer.options && layer.options.maxZoom !== undefined) {
       return; 
     }
     map.removeLayer(layer);
   })
-});
+
 
 
 
@@ -121,9 +127,9 @@ function addCountryPolygon(iso_code) {
     type: "GET",
     dataType: "json",
     success: function (response) {
-      console.log(response);
+      // console.log(response);
 
-      // creates a new L.geoJSON layer with the geometry object
+
       var polygonLayer = L.geoJSON(
         {
           type: "Feature",
@@ -165,6 +171,9 @@ function getCountryInfo(iso_code) {
       $("#country").text(data.name);
       $("#capitalCity").text(data.capital);
       $("#population").text(data.population);
+      $("#continent").text(data.continent);
+      $("#countryCode").text(data.countryCode);
+      $("#area").text(data.area);
 
       // retrieves the country flag
       $.ajax({
@@ -173,7 +182,7 @@ function getCountryInfo(iso_code) {
         data: { iso_code: iso_code },
         dataType: "json",
         success: function (response) {
-          // Updates the flag image source with the URL from the JSON response
+       
           $("#flag").attr("src", response.flag_url);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -190,7 +199,6 @@ function getCountryInfo(iso_code) {
 
 
 
-
   //------------------retrieves the weatherforecast--------------------------------
   function getWeather(iso_code) {
     $.ajax({
@@ -201,45 +209,53 @@ function getCountryInfo(iso_code) {
         iso_code: iso_code,
       },
       success: function (response) {
-        console.log(response);
-        $("#currentTemp").text(Math.round(response.currentTemp) + "°C");
-        $("#minTemp").text(Math.round(response.minTemp) + "°C");
-        $("#maxTemp").text(Math.round(response.maxTemp) + "°C");
-        $("#weatherDesc").text(response.weatherDesc);
-        $("#weatherIcon").attr("src", response.weatherIcon);
-        $("#forecast").empty();
-        response.forecast.forEach(function (day) {
-          const tempInCelsius = Math.round(day.temp);
-          const tempString =
-            tempInCelsius >= 10
-              ? tempInCelsius.toString()
-              : "0" + tempInCelsius.toString();
-          $("#forecast").append(
-            `<li>${day.date}: ${tempString}°C (${day.desc})</li>`
+        $("#weatherModalLabel").text(response.capitalCity);
   
-            
-          )
-        });
-        $(document).on("click", "#weatherForecast", function () {
-          // getWeather(iso_code);
-          $("#weather").modal("show"); // Show the modal when the button is clicked
-        });
+        // Populate current weather
+        $("#todayConditions").text(response.currentWeatherDesc);
+        $("#todayIcon").attr("src", response.currentWeatherIcon);
+        $("#todayMaxTemp").text(response.currentMaxTemp);
+        $("#todayMinTemp").text(response.currentMinTemp);
+  
+        for (var i = 0; i < response.forecast.length; i++) {
+          var forecastItem = response.forecast[i];
+          var date = new Date(forecastItem.date);
+          var formattedDate = formatDate(date);
+  
+          $("#day" + (i + 1) + "Date").text(formattedDate);
+          $("#day" + (i + 1) + "MaxTemp").text(forecastItem.maxTemp);
+          $("#day" + (i + 1) + "MinTemp").text(forecastItem.minTemp);
+          $("#day" + (i + 1) + "Icon").attr("src", forecastItem.icon);
+        }
+  
+        $("#lastUpdated").text(response.lastUpdated);
+  
+        // Show the weather modal
+        $("#weatherModal").modal("show");
       },
-  
-    
       error: function (jqXHR, textStatus, errorThrown) {
         alert(errorThrown + " " + jqXHR + " " + textStatus);
       },
     });
   }
   
+  function formatDate(date) {
+    var options = { month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  }
+  
   $(document).on("click", "#getWeatherClose", function () {
-    $("#weather").modal("hide");
+    $("#weatherModal").modal("hide");
   });
   
+  
+
   //--------------------retrieves currency----------------------------------
 
- function getCurrency(iso_code) {
+  function getCurrency(iso_code) {
+    $("#inputAmount").val("1");
+    $("#convertedAmount").val("");
+  
     $.ajax({
       url: "libs/php/getCurrency.php",
       type: "POST",
@@ -247,56 +263,71 @@ function getCountryInfo(iso_code) {
         iso_code: iso_code,
       },
       success: function (data) {
-        console.log(data);
-
         const obj = JSON.parse(data);
-
-        console.log(obj.new_amount); // Output: 0.95
-        console.log(obj.new_currency); // Output: "EUR"
-        console.log(obj.old_currency); // Output: "USD"
-        console.log(obj.old_amount);
-
-        // Extract new_amount and new_currency from the data object
+  
         let newAmount = obj.new_amount;
         let newCurrency = obj.new_currency;
         let currencyCode = obj.old_currency;
         let baseRate = "1 " + currencyCode;
         let oldAmount = obj.old_amount;
-
-        // Updates the modal with the new amount and new currency
+  
         $("#newCurrency").text(newCurrency);
         $("#newAmount").text(newAmount);
         $("#currencyName").text(currencyCode);
         $("#currencyCode").text(currencyCode);
         $("#baseRate").text(baseRate);
         $("#oldAmount").text(oldAmount);
-
-        // Update the exchange rate in the modal
-        let exchangeRateText =
-          "1 " + currencyCode + " = " + newAmount + " " + newCurrency;
+  
+        let exchangeRateText = "1 " + currencyCode + " = " + newAmount + " " + newCurrency;
         $("#exchangeRate").text(exchangeRateText);
-
-        console.log($("#exchangeRate").text(), $("#currencyName").text());
-
+  
+        let inputAmount = parseFloat($("#inputAmount").val());
+  
+        if (!isNaN(inputAmount)) {
+          let convertedAmount;
+          if (inputAmount === 0) {
+            convertedAmount = 0;
+          } else {
+            convertedAmount = (inputAmount * newAmount).toFixed(2);
+          }
+          let convertedAmountText = convertedAmount + " " + newCurrency;
+          $("#convertedAmount").val(convertedAmountText);
+        }
+  
+        $("#inputCurrency").val("USD");
+  
+        $("#inputAmount").on("input", function () {
+          let inputAmount = parseFloat($(this).val());
+  
+          if (!isNaN(inputAmount)) {
+            let convertedAmount;
+            if (inputAmount === 0) {
+              convertedAmount = 0;
+            } else {
+              convertedAmount = (inputAmount * newAmount).toFixed(2);
+            }
+            let convertedAmountText = convertedAmount + " " + newCurrency;
+            $("#convertedAmount").val(convertedAmountText);
+          }
+        });
+  
+        $("#inputCurrencyLabel").text("USD");
       },
-      
-
       error: function (jqXHR, textStatus, errorThrown) {
         alert(errorThrown + " " + jqXHR + " " + textStatus);
       },
     });
-  }});
+  }
+  
 
-    $(document).on("click", "#getCurrencyClose", function () {
-      $("#currency").modal("hide");
-    });
-
-
-
-
+  
+  $(document).on("click", "#getCurrencyClose", function () {
+    $("#currencyModal").modal("hide");
+  });
+  
+});
 
   //---------------------retrieves the wiki page-----------------------------------------
-   
   function getWiki(iso_code) {
     $.ajax({
       url: "libs/php/getWikipedia.php",
@@ -305,189 +336,163 @@ function getCountryInfo(iso_code) {
         iso_code: iso_code,
       },
       success: function (data) {
-    const countryName = $("#countries option:selected").text();
-
-    // Constructs the Wikipedia URL for the selected country
-    let wikiUrl = data.replace("<br>", "/") + encodeURIComponent(countryName);
-
-    // console.log(iso_code);
-
-    // console.log(data);
-    $("#wikiModal #wikiFrame").attr("src", wikiUrl);
-    $("#wikiModal .modal-title").text(countryName + " - Wikipedia");
-
-  },
-
-  error: function (jqXHR, textStatus, errorThrown) {
-    console.log("Error: " + textStatus + " - " + errorThrown);
-  },
-    });
-  };
-  $(document).on("click", "#getWikiClose", function () {
-    $("#wikiModal").modal("hide");
-  });
-
-
-
-  //------------retrieves the news articles for the news modal----------------------------------
-  function getNews(iso_code) {
-    $.ajax({
-      url: "libs/php/getNews.php",
-      type: "POST",
-      dataType: "json", // expect JSON data
-      data: {
-        iso_code: iso_code,
-       
-      },
-
-      success: function (response) {
-        console.log(iso_code)
-        const data = response;
+        console.log(data);
+        const summary = data.summary;
+        const wikipediaLink = data.wikipediaLink;
   
-        $("#newsModalBody").empty();
+        console.log("Summary: ", summary);
+        console.log("Wikipedia Link: ", wikipediaLink);
   
-        if (data.length === 0) {
-          $("#newsModalBody").text("Apologies, there is no news feed available for this country");
-          return;
+        if (summary) {
+          $("#wikiModal .modal-body #wikiSummary").text(summary);
         }
   
-        data.forEach(function (article) {
-          const title = article.title;
-          const author = article.author;
-          const publishedAt = article.publishedAt;
-          const description = article.description;
-          const imgUrl = article.image;
-          const url = article.url;
-        
-          const link = $("<a>")
-            .attr("href", url)
-            .attr("target", "_blank")
-            .addClass("article-link")
-            .append(
-              $("<img>").attr("src", imgUrl)
-            )
-            .append(
-              $("<div>")
-                .addClass("article-text")
-                .append(
-                  $("<h5>").text(title)
-                )
-                .append(
-                  $("<p>").html(`By ${author} | ${publishedAt}`)
-                )
-                .append(
-                  $("<p>").text(description)
-                )
-            );
-        
-          link.on("click", function () {
-            window.open(url, "_blank");
-          });
-        
-          $("#newsModalBody").append(link);
-        });
-         
+        if (wikipediaLink) {
+          let absoluteLink = wikipediaLink;
+          if (!absoluteLink.startsWith("http") && !absoluteLink.startsWith("www")) {
+            absoluteLink = "https://" + absoluteLink;
+          }
+          $("#wikiModal .modal-body #wikiLink").attr("href", absoluteLink);
+        }
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        alert(errorThrown + " " + jqXHR + " " + textStatus);
+        console.log("Error: " + textStatus + " - " + errorThrown);
       },
-      
     });
   }
   
-
-   
-
-    
-//----------Markers--------------------------------------------------------------------------
-  function getNearbyCities() {
-    let iso_code = $("#countries").val();
-
-    $.ajax({
-        url: "libs/php/getCityMarker.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-            iso_code: iso_code,
-        },
-        success: function (data) {
-          let cityMarkers = L.markerClusterGroup();
-      
-          // Define the custom icon options
-          let iconOptions = {
-              icon: "fa-building",
-              markerColor: "red",
-              prefix: "fa",
-              shape: "circle",
-              iconSize: [30, 30],
-          };
-      
-          data.geonames.forEach(function (city, index) {
-  
-              let icon = L.ExtraMarkers.icon({
-                  ...iconOptions,
-                  number: index + 1,
-              });
-      
-              let marker = L.marker([city.lat, city.lng], { icon });
-              marker.bindPopup(city.name);
-              cityMarkers.addLayer(marker);
-          });
-      
-          cityGroup.addLayer(cityMarkers); 
-          cityMarkers.addTo(map);
-         
-      },
-      
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown + " " + jqXHR + " " + textStatus);
-        },
-       } )  } ;
-
-
-    function getAirportMarkers() {
-    let iso_code = $("#countries").val();
-
-  
-
-    $.ajax({
-        url: "libs/php/getAirportMarker.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-            iso_code: iso_code,
-        },
-        success: function (data) {
-          let airportMarkers = L.markerClusterGroup();
-      
-          let iconOptions = {
-              icon: "fa-plane",
-              markerColor: "blue",
-              prefix: "fas",
-              shape: "circle",
-              iconSize: [30, 30],
-          };
-      
-          data.airports.forEach(function (airport) {
-          
-              let icon = L.ExtraMarkers.icon(iconOptions);
-      
-              let marker = L.marker([airport.lat, airport.lng], { icon });
-              marker.bindPopup(airport.name);
-              airportMarkers.addLayer(marker);
-          });
-          
-          airportGroup.addLayer(airportMarkers);
-          airportMarkers.addTo(map);
-   
-      },
-      
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(errorThrown + " " + jqXHR + " " + textStatus);
-        },
+  $(document).ready(function () {
+    $("#wikiModal").modal({
+      show: false,
     });
+  });
+  
+  $(document).on("click", "#getWikiClose", function () {
+    $("#wikiModal").modal("hide");
+  });
+  
+
+  //------------retrieves the news articles for the news modal----------------------------------
+ 
+  function getNews(iso_code) {
+    $.ajax({
+      url: 'libs/php/getNews.php',
+      method: 'GET',
+      dataType: 'json',
+      data: {
+        iso_code: iso_code 
+      },
+      success: function(response) {
+        var articles = response.articles;
+        if (articles.length > 0) {
+          $('#articlesContainer').empty();
+          for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            var title = article.title;
+            var url = article.url;
+            var publishedAt = article.publishedAt;
+            var imageUrl = article.imageUrl;
+            var category = article.category;
+  
+            var articleElement = $('<div class="row article mb-3"></div>');  
+            var imageCol = $('<div class="col-md-5"></div>');
+            if (imageUrl) {
+              imageCol.append('<a href="' + url + '" target="_blank"><img class="img-fluid rounded bigger-image" src="' + imageUrl + '" alt="Article Image"></a>');
+            } else {
+              imageCol.append('<img class="img-fluid rounded bigger-image" src="libs/images/news.jpeg" alt="Article Image">');
+            }
+  
+            var contentCol = $('<div class="col-md-7"></div>');
+            contentCol.append('<h4 class="titleHeading"><a href="' + url + '" target="_blank">' + title + '</a></h4>');
+            var publishedAtMoment = moment(publishedAt, 'YYYY-MM-DD HH:mm:ss');
+            var publishedText = publishedAtMoment.fromNow();
+            var metadata = $('<div class="metadata"></div>');
+            metadata.append('<p class="categoryText">' + category + '</p>');
+  
+            var metadataRow = $('<div class="row"></div>');
+            var categoryCol = $('<div class="col-md-6"></div>').append(metadata.children()[0]);
+            var publishedAtCol = $('<div class="col-md-6"></div>').append('<p class="publishedText">' + publishedText + '</p>');
+  
+            metadataRow.append(categoryCol);
+            metadataRow.append(publishedAtCol);
+            contentCol.append(metadataRow);
+  
+            articleElement.append(imageCol);
+            articleElement.append(contentCol);
+  
+            $('#articlesContainer').append(articleElement);
+          }
+  
+        } else {
+          $('#newsModal').modal('hide');
+          alert('No articles found.');
+        }
+      },
+      error: function() {
+        console.log('Error occurred while retrieving articles.');
+      }
+    });
+  }
+  
+  
+  
+// ---------- Time zone ----------------------------
+
+function getTimeZone(isoCode) {
+  $.ajax({
+    url: 'libs/php/getTimeZone.php',
+    type: 'GET',
+    data: { iso_code: isoCode },
+    dataType: 'json',
+    success: function(response) {
+      $('#modal-timezone').text(response.timezone);
+      
+      const currentTime = new Date(response.time);
+      const currentFormattedTime = currentTime.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      $('#modal-current-time').text(currentFormattedTime);
+      
+      const sunsetTime = new Date(response.sunset);
+      const sunsetFormattedTime = sunsetTime.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      $('#modal-sunset-time').text(sunsetFormattedTime);
+      
+      const sunriseTime = new Date(response.sunrise);
+      const sunriseFormattedTime = sunriseTime.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      $('#modal-sunrise-time').text(sunriseFormattedTime);
+    },
+    error: function() {
+      alert('Failed to retrieve country information.');
+    }
+  });
 }
 
+$(document).on("click", "#getTimeClose", function () {
+  $("#country-modal").modal("hide");
+});
+
+  
+ 
+});
+
+// --------------------- date ---------------------------------------------
+function formatDate(date) {
+  return moment(date).format('ddd, MMM Do');
+}
+
+
+  
+//----------Markers--------------------------------------------------------------------------
 let cityGroup = L.layerGroup();
 let airportGroup = L.layerGroup();
 
@@ -496,75 +501,177 @@ var overlays = {
   "Airports": airportGroup,
 };
 
-var layerControl = L.control.layers(null, overlays).addTo(map);
+var baseLayers = {
+  "Street Map": tile,
+  "Satellite": satelliteTile,
+};
 
-cityGroup.addTo(map);
-airportGroup.addTo(map);
+var layerControl = L.control.layers(baseLayers, overlays).addTo(map);
 
-// // Set the "Cities" and "Airports" layers to be checked by default
-// layerControl.addOverlay(cityGroup, "Cities");
-// layerControl.addOverlay(airportGroup, "Airports");
+function formatPopulation(population) {
+  if (population < 1000) {
+    return population.toString();
+  } else if (population < 1000000) {
+    return (population / 1000).toFixed(1) + 'K';
+  } else {
+    return (population / 1000000).toFixed(1) + 'M';
+  }
+}
 
-// layerControl.on("baselayerchange", function (event) {
-//   if (event.name === "Cities") {
-//     cityGroup.addTo(map);
-//     airportGroup.removeFrom(map);
-//   } else if (event.name === "Airports") {
-//     airportGroup.addTo(map);
-//     cityGroup.removeFrom(map);
-//   }
-// });
+function getNearbyCities() {
+  let iso_code = $("#countries").val();
 
-// layerControl.on("overlayadd", function (event) {
-//   var layer = event.layer;
-//   if (layer === cityGroup || layer === airportGroup) {
-//     layer.eachLayer(function (marker) {
-//       marker.setStyle({ opacity: 1 });
-//     });
-//   }
-// });
+  $.ajax({
+    url: "libs/php/getCityMarker.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      iso_code: iso_code,
+    },
+    success: function (data) {
+      let cityMarkers = L.markerClusterGroup();
 
-// layerControl.on("overlayremove", function (event) {
-//   var layer = event.layer;
-//   if (layer === cityGroup || layer === airportGroup) {
-//     layer.eachLayer(function (marker) {
-//       marker.setStyle({ opacity: 0 });
-//     });
-//   }
-// });
+      let iconOptions = {
+        icon: "fa-building",
+        markerColor: "red",
+        prefix: "fa",
+        shape: "circle",
+        iconSize: [40, 40],
+      };
 
-// $.when(getNearbyCities(), getAirportMarkers()).done(function () {
-//   // Set the "Cities" and "Airports" layers to be checked by default
-//   layerControl.addOverlay(cityGroup, "Cities");
-//   layerControl.addOverlay(airportGroup, "Airports");
+      data.geonames.forEach(function (city, index) {
+
+        let icon = L.ExtraMarkers.icon({
+          ...iconOptions,
+          number: index + 1,
+          className: 'marker-icon' 
+        });
+
+        let marker = L.marker([city.lat, city.lng], { icon });
+        marker.bindPopup(city.name);
+        marker.bindTooltip(city.name + '<br>Population: ' + formatPopulation(city.population));
+        cityMarkers.addLayer(marker);
+      });
+
+      cityGroup.addLayer(cityMarkers);
+      map.addLayer(cityGroup);
+      $('input:checkbox[value="Cities"]').prop('checked', true);
+    },
+
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert(errorThrown + " " + jqXHR + " " + textStatus);
+    },
+  });
+}
+
+function getAirportMarkers() {
+  let iso_code = $("#countries").val();
+
+  $.ajax({
+    url: "libs/php/getAirportMarker.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      iso_code: iso_code,
+    },
+    success: function (data) {
+      let airportMarkers = L.markerClusterGroup();
+
+      let iconOptions = {
+        icon: "fa-plane",
+        markerColor: "blue",
+        prefix: "fas",
+        shape: "circle",
+        iconSize: [40, 40],
+      };
+
+      data.airports.forEach(function (airport) {
+
+        let icon = L.ExtraMarkers.icon(iconOptions);
+
+        let marker = L.marker([airport.lat, airport.lng], { icon });
+        marker.bindPopup(airport.name);
+        marker.bindTooltip(airport.name)
+        airportMarkers.addLayer(marker);
+      });
+
+      airportGroup.addLayer(airportMarkers);
+      map.addLayer(airportGroup);
+      $('input:checkbox[value="Airports"]').prop('checked', true);
+    },
+
+    error: function (jqXHR, textStatus, errorThrown) {
+      alert(errorThrown + " " + jqXHR + " " + textStatus);
+    },
+  });
+}
 
 
-  // Set the default selected layers
-  // layerControl.setSelectedLayers([cityGroup, airportGroup]);
-// });
+// buttons   
 
+var countryButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-globe fa-2x btn-lg easybutton-icon',
+    onClick: function() {
+      $('#countryNameModal').modal('show');
+    }
+  }]
+}).addTo(map);
+countryButton.button.id = 'countryButton';
 
-// Object.keys(layerControl._layers).forEach(function (key) {
-//   var layer = layerControl._layers[key].layer;
-//   if (layer === cityGroup || layer === airportGroup) {
-//     layerControl._map.addLayer(layer);
-//   }
-// });
+var currencyButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-coins fa-2x easybutton-icon',
+    onClick: function() {
+      $('#currencyModal').modal('show');
+    }
+  }]
+}).addTo(map);
+currencyButton.button.id = 'currencyButton';
 
-// layerControl.on("add", function (event) {
-//   var layer = event.layer;
-//   if (layer === cityGroup || layer === airportGroup) {
-//     layer.eachLayer(function (marker) {
-//       marker.setStyle({ opacity: 1 });
-//     });
-//   }
-// });
+var wikiButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-brands fa-wikipedia-w fa-2x easybutton-icon',
+    onClick: function() {
+      $('#wikiModal').modal('show');
+    }
+  }]
+}).addTo(map);
+wikiButton.button.id = 'wikiButton';
 
-// layerControl.on("remove", function (event) {
-//   var layer = event.layer;
-//   if (layer === cityGroup || layer === airportGroup) {
-//     layer.eachLayer(function (marker) {
-//       marker.setStyle({ opacity: 0 });
-//     });
-//   }
-// });
+var newsButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-newspaper fa-2x easybutton-icon',
+    onClick: function() {
+      $('#newsModal').modal('show');
+    }
+  }]
+}).addTo(map);
+newsButton.button.id = 'newsButton';
+
+var weatherButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-cloud-sun-rain fa-2x easybutton-icon',
+    onClick: function() {
+      $('#weather').modal('show');
+    }
+  }]
+}).addTo(map);
+weatherButton.button.id = 'weatherButton';
+
+var countryButton = L.easyButton({
+  states: [{
+    stateName: 'default',
+    icon: 'fa fa-clock fa-2x easybutton-icon',
+    onClick: function() {
+      $('#country-modal').modal('show');
+    }
+  }]
+}).addTo(map);
+countryButton.button.id = 'countryButton';
+

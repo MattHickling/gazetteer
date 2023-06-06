@@ -1,264 +1,52 @@
-#map { 
-  position: absolute;
-  z-index: 1;
-  height: 100%;
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#selectContainer {
+  position: fixed;
   top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 11px 0;
 }
 
-form{
- display: flex;
- justify-content: end;
- margin: 1rem;
-} 
-
-select#countries{
-   display: flex;
-   justify-content: end;
-   height:33px;    
-   z-index:999;  
-   position: absolute;
-   background-color: blue;
-   color: white;
-   min-width: 160px;
-   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);  
-   border-radius: 11px; 
-   text-align: center;
-   max-height: 70%;
-   margin-right: 5%;
+#countries {
+  width: 200px;
+  margin: 0 auto;
 }
 
-button#countryName.btn.btn-primary{
- z-index: 999;
- background-color: blue;
- color: white;
- position:absolute;
- margin-top: 15%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-
-}
-
-div#countryNameModal.modal.fade.show{
-  width: 70%;
-}
-
-#countryNameModal {
-  z-index: 2000;
-  color: white;
-  position:absolute;
-  margin-top: 10%;
-  margin-left: 20%;
-  height: 70%;
-  width: 20%;
-  margin-top: 10rem;
-}
-
-button#currency.btn.btn-primary {
- z-index: 999;
- background-color: blue;
- color: white;
- position:absolute;
- margin-top: 20%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-
-}
-
-button#wiki.btn.btn-primary {
- z-index: 999;
- background-color: blue;
- color: white;
- position:absolute;
- margin-top: 25%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-}
-
-button#news.btn.btn-primary {
- z-index: 999;
- background-color: blue;
- color: white;
- position:absolute;
- margin-top:30%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-
-}
-
-button#weatherForecast.btn.btn-primary {
- z-index: 999;
- background-color: blue;
- color: white;
- position:absolute;
- margin-top:35%;
- margin-left: 1.5%;
- height: 40px;
- width: 40px;
-
-}
-
-.modal-title,
-.modal-body h5,
-.modal-body p {
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 1rem; /* decrease the font size */
-  color: #333;
-}
-
-.modal-header {
-  background-color: grey;
-  border-bottom: 1px solid #e5e5e5;
-  /* padding: 15px; */
-  font-size: 1rem; /* decrease the font size */
-}
-
-.modal-footer .btn-secondary {
-  background-color: #007bff;
-  color: #fff;
-  font-size: 1rem;
-  padding: 10px 20px;
-  border-radius: 5px;
-}
-
-.modal-content {
-  box-shadow: none;
-  border: none;
-}
-
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px; /* increase the margin */
-}
-
-.modal-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-body img {
-  max-width: 60%; /* increase the image size */
-  max-height: 50%; /* increase the image size */
-  margin-left: 10%; /* adjust the image margin */
-}
-
-.modal-dialog {
-  max-width: 90%; /* increase the dialog width */
-}
-
-.modal-title {
-  font-size: 1.5rem; /* increase the title size */
-}
-
-@media (max-width: 1096px) {
-  select#countries{
-    margin-right: 20%;
-  }
-  button#countryName.btn.btn-primary{
-    margin-top: 15%;
-  }
-  button#currency.btn.btn-primary {
-    margin-top: 25%;
-  }
-  button#wiki.btn.btn-primary{
-    margin-top: 35%;
-  }
-  button#news.btn.btn-primary{
-    margin-top: 45%;
-  }
-  button#weatherForecast.btn.btn-primary{
-    margin-top: 55%;
-  }
-
-
-}
-
-@media (max-width: 573px) {
-  select#countries {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0;
-    width: 100%;
-    z-index: 999;
-    background-color: grey;
-  }
-  button#countryName.btn.btn-primary{
-    margin-top: 20%;
-    background-color: grey;
-  }
-  button#currency.btn.btn-primary {
-    margin-top: 39%;
-    background-color: grey;
-  }
-  button#wiki.btn.btn-primary{
-    margin-top: 58%;
-    background-color: grey;
-  }
-  button#news.btn.btn-primary{
-    margin-top: 77%;
-    background-color: grey;
-  }
-  button#weatherForecast.btn.btn-primary{
-    margin-top: 96%;
-    background-color: grey;
-  }
-}
-
-.newsModal .modal-body {
-  max-width: 100%;
-  overflow-x: auto;
-  font-size: 0.8rem; /* decrease the font size */
-}
-
-a,
-.newsModal{
-  text-align: center;
-  font-size: 1.2rem; /* decrease the font size */
-}
-
-p,
-.newsModal{
-  font-size: 0.8rem; /* decrease the font size */
-}
-
-.modal-header {
-  z-index: 1000; /* increase the z-index */
-}
-
-.modal-body {
-  position: relative;
-  /* margin-top: 100px; */
-  overflow-y: scroll;
-  max-height: 90vh; /* reduce the max-height value */
-  height: 100%;
-  margin-bottom: 0px;
-  /* padding: -100px; */
-  }
-
-.newsModal {
-  position: relative;
-  z-index: 1002; /* set a higher z-index */
-}
-
-#countryNameModal .modal-body {
+.leaflet-extra-icon i {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-img#flag {
-  margin-left: 21%;
+#flag {
+  max-width: 50px;
 }
 
+#map > div.leaflet-control-container > div.leaflet-top.leaflet-right{
+  z-index: 1999;
+}
+
+.easybutton-icon{
+  margin-left: -18%;
+  margin-top: 3%;
+}
+
+#weatherButton .fa.fa-cloud-sun-rain.fa-2x.easybutton-icon {
+  margin-left: -0.4rem;
+}
+
+
+.fa.fa-brands.fa-wikipedia-w.fa-2x.easybutton-icon {
+  margin-left: -0.39rem;
+}

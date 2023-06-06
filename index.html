@@ -6,27 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gazetteer</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-
-    <!-- stylesheet -->
-    <link rel="stylesheet" href="libs/css/style.css">
-    <link rel="stylesheet" href="libs/css/preloader.css">
-
-    <!-- leaflet -->
-    <link rel="stylesheet" href="libs/leaflet/leaflet.css">
-
-    <!-- bootstrap -->
-    <link rel="stylesheet" href="libs/css/bootstrap.css">
-    
-   <!-- fontawesome -->
-   <link rel="stylesheet" href="libs/css/fontawesome/css/all.css">
  
+    
+
+  
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="libs/css/bootstrap.css">
+
+  <!-- leaflet -->
+  <link rel="stylesheet" href="libs/leaflet/leaflet.css">
+
+    <!-- Easy buttons -->
+  <link rel="stylesheet" href="libs/Leaflet.EasyButton/src/easy-button.css">
+
   <!--leaflet marker cluster-->
-    <link rel="stylesheet" href="libs/leafletMarkerCluster/MarkerCluster.css">
-    <link rel="stylesheet" href="libs/leafletMarkerCluster/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="libs/leafletMarkerCluster/MarkerCluster.css">
+  <link rel="stylesheet" href="libs/leafletMarkerCluster/MarkerCluster.Default.css">
 
   <!--leaflet extra markers-->
-    <link rel="stylesheet" href="libs/leafletExtraMarkers/css/leaflet.extra-markers.min.css">
-    
+  <link rel="stylesheet" href="libs/leafletExtraMarkers/css/leaflet.extra-markers.min.css">
+  
+  <!-- fontawesome -->
+  <link rel="stylesheet" href="libs/css/fontawesome/css/all.css">
+
+  <!-- stylesheet -->
+  <link rel="stylesheet" href="libs/css/style.css">
+  <link rel="stylesheet" href="libs/css/preloader.css">
+
    
 </head>
 <body>
@@ -35,100 +41,55 @@
   </div>
     <div id="map"></div>
 
-    <form>
-      <select id="countries" name="countries">
-        <option value="">Select a country</option>
-      </select>
-    </form>
 
 
-        <!-- County Info Button trigger modal -->
-    <button type="button" id="countryName" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#countryNameModal">
-      <i class="fa-solid fa-globe"></i>
-    </button>
+    <span id="selectContainer">
+      <select id="countries" class="form-select"></select>
+      </span>
 
-    <!-- Modal -->
-    <div class="modal fade" id="countryNameModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Country Information</h5>
-          </div>
-          <div class="modal-body">
-            <p><strong>Country Name: </strong><span id="country"></span></p>
-                <p><strong>Capital City: </strong> <span id="capitalCity"></span></p>
-                <p><strong>Population: </strong> <span id="population"></span></p>
-                <p><img id="flag" src="" alt="Country Flag"></p> <!-- Add an <img> tag to show the flag -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-      
-
-    <!-- Currency Button trigger modal -->
-    <button type="button" class="btn btn-primary" id="currency" data-bs-toggle="modal" data-bs-target="#currencyModal">
-      <i class="fa-solid fa-coins"></i>
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="currencyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Currency</h5>
-          </div>
-          <div class="modal-body">
-            <p><strong>Currency Name: </strong><span id="newCurrency"></span></p>
-            <p><strong>Exchange Rate: </strong><span id="exchangeRate"></span></p>   
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" id="getCurrencyClose" data-bs-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-    <!-- Wiki button trigger modal -->
-    <button type="button" class="btn btn-primary" id="wiki" data-bs-toggle="modal" data-bs-target="#wikiModal">
-      <i class="fa-brands fa-wikipedia-w"></i>
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="wikiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Wikipedia</h5>
-          </div>
-          <div class="modal-body">
-            <iframe id="wikiFrame" class="wikiFrame" width="100%" height="600px"></iframe>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="getWikiClose">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-<!-- News button trigger modal -->
-<button type="button" class="btn btn-primary" id="news" data-bs-toggle="modal" data-bs-target="#newsModal">
-  <i class="fa-solid fa-newspaper"></i>
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="newsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-scrollable">
+    <!-- Country Modal -->
+<div class="modal fade" id="countryNameModal" tabindex="-1" data-bs-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">News Headlines</h5>
+      <div class="modal-header bg-success bg-gradient">
+        <h5 class="modal-title text-light" id="exampleModalLabel">Country Information</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" id="newsModalBody">
+      <div class="modal-body">
+        <table class="table table-striped">
+          <tbody>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-globe fa-2x"></i></th>
+              <td class="text-end"><span id="country"></span></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-sharp fa-solid fa-city fa-2x"></i></th>
+              <td class="text-end"><span id="capitalCity"></span></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-person fa-2x"></i></th>
+              <td class="text-end"><span id="population"></span></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-flag fa-2x"></i></th>
+              <td class="text-end"><img id="flag" src="" alt="Country Flag" class="img-fluid"></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-mountain-city fa-2x"></i></th>
+              <td class="text-end"><span id="continent"></span></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-earth-americas fa-2x"></i></th>
+              <td class="text-end"><span id="countryCode"></span></td>
+            </tr>
+            <tr>
+              <th scope="row" class="align-middle"><i class="fa-solid fa-arrows-left-right fa-2x"></i></th>
+              <td class="text-end"><span id="area"></span> Km 2</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -139,60 +100,259 @@
 
 
 
-    <!-- Weather Forecast button trigger modal -->
-    <button type="button" class="btn btn-primary" id="weatherForecast" data-toggle="modal" data-target="#weather">
-      <i class="fa-solid fa-cloud-sun-rain"></i>
-    </button>
+  
 
-    <div class="modal fade" id="weather" tabindex="-1" role="dialog" aria-labelledby="weatherModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="weatherModalLabel">Weather Forecast</h5>
-            </button>
+<!-- Currency Modal -->
+<div class="modal fade" id="currencyModal" tabindex="-1" data-bs-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success bg-gradient">
+        <h5 class="modal-title text-light" id="exampleModalLabel">Currency Converter</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="inputAmount">Enter amount in USD:</label>
+          <input type="number" id="inputAmount" class="form-control" placeholder="Enter amount">
+        </div>
+        <div class="form-group">
+          <label for="convertedAmount">Converted Amount:</label>
+          <input type="text" id="convertedAmount" class="form-control" readonly>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="getCurrencyClose" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+ <!-- Wiki Modal -->
+<div class="modal fade" id="wikiModal" tabindex="-1" data-bs-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success bg-gradient">
+        <h5 class="modal-title text-light" id="exampleModalLabel">Wikipedia</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="wikiContent">
+          <p id="wikiSummary"></p>
+          <p><a href="" id="wikiLink" target="_blank">Read More</a></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="getWikiClose">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- news modal -->
+<div class="modal fade" id="newsModal" tabindex="-1" data-bs-backdrop="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success bg-gradient">
+        <h5 class="modal-title text-light" id="staticBackdropLabel">News Headlines</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="articlesContainer"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!----------------- weather modal ---------------------------------->
+<div id="weather" class="modal fade" tabindex="-1" data-bs-backdrop="false" data-bs-backdrop="false" data-bs-keyboard="false" aria-labelledby="weatherModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content shadow">
+      <div class="modal-header bg-success bg-gradient">
+        <h5 class="modal-title text-light" id="weatherModalLabel"></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col border">
+            <p class="fw-bold fs-5 mt-3">TODAY</p>
+            <div class="row">
+              <div class="col text-center">
+                <p id="todayConditions" class="fw-bold fs-6"></p>
+              </div>
+              <div class="col text-center">
+                <img id="todayIcon" class="img-fluid mt-0" src="" alt="Weather Icon">
+              </div>
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="todayMaxTemp"></span><sup>o</sup><span class="tempMetric">c</span></p>
+                <p class="fs-5 mt-0 text-secondary"><span id="todayMinTemp"></span><sup>o</sup><span class="tempMetric">c</span></p>
+              </div>
+            </div>
           </div>
-          <div class="modal-body">
-            <p>Current Temperature: <span id="currentTemp"></span></p>
-            <p>Minimum Temperature: <span id="minTemp"></span></p>
-            <p>Maximum Temperature: <span id="maxTemp"></span></p>
-            <p>Weather Description: <span id="weatherDesc"></span></p>
-            <img id="weatherIcon" src="" alt="Weather Icon">
-            <h5>5-Day Forecast:</h5>
-            <ul id="forecast"></ul>
+        </div>
+        <div class="row">
+          <div class="col border">
+            <div class="row">
+              <div class="col text-center">
+                <p id="day1Date" class="fw-bold fs-6 mt-3"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="day1MaxTemp"></span><sup>o</sup>c</p>
+                <p class="fs-5 mt-0 text-secondary"><span id="day1MinTemp"></span><sup>o</sup>c</p>
+              </div>
+              <div class="col text-center">
+                <img id="day1Icon" src="" alt="Weather Icon" title="">
+              </div>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="getWeatherClose">Close</button>
+          <div class="col border">
+            <div class="row">
+              <div class="col text-center">
+                <p id="day2Date" class="fw-bold fs-6 mt-3"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="day2MaxTemp"></span><sup>o</sup>c</p>
+                <p class="fs-5 mt-0 text-secondary"><span id="day2MinTemp"></span><sup>o</sup>c</p>
+              </div>
+              <div class="col text-center">
+                <img id="day2Icon" src="" alt="Weather Icon" title="">
+              </div>
+            </div>
+          </div>
+          <div class="col border">
+            <div class="row">
+              <div class="col text-center">
+                <p id="day3Date" class="fw-bold fs-6 mt-3"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="day3MaxTemp"></span><sup>o</sup>c</p>
+                <p class="fs-5 mt-0 text-secondary"><span id="day3MinTemp"></span><sup>o</sup>c</p>
+              </div>
+              <div class="col text-center">
+                <img id="day3Icon" src="" alt="Weather Icon" title="">
+              </div>
+            </div>
+          </div>
+          <div class="col border">
+            <div class="row">
+              <div class="col text-center">
+                <p id="day4Date" class="fw-bold fs-6 mt-3"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="day4MaxTemp"></span><sup>o</sup>c</p>
+                <p class="fs-5 mt-0 text-secondary"><span id="day4MinTemp"></span><sup>o</sup>c</p>
+              </div>
+              <div class="col text-center">
+                <img id="day4Icon" src="" alt="Weather Icon" title="">
+              </div>
+            </div>
+          </div>
+          <div class="col border">
+            <div class="row">
+              <div class="col text-center">
+                <p id="day5Date" class="fw-bold fs-6 mt-3"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <p class="fw-bold fs-4 mb-0"><span id="day5MaxTemp"></span><sup>o</sup>c</p>
+                <p class="fs-5 mt-0 text-secondary"><span id="day5MinTemp"></span><sup>o</sup>c</p>
+              </div>
+              <div class="col text-center">
+                <img id="day5Icon" src="" alt="Weather Icon" title="">
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <div class="modal-footer">
+        <p class="fs-6 fw-light">Last updated <span id="lastUpdated"></span>. Powered by <a href="https://openweathermap.org/" target="_blank" title="OpenWeather API">OpenWeather API</a></p>
+      </div>
     </div>
+  </div>
+</div>
     
-  
+    
+    <!------------------ time ------------------------------->
+    <div class="modal fade" id="country-modal" tabindex="-1" data-bs-backdrop="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success bg-gradient">
+            <h5 class="modal-title text-light" id="exampleModalLabel">Time Zone Information</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <tbody>         
+                <tr>
+                  <th scope="row" class="align-middle"><i class="fa-solid fa-earth-asia fa-2x"></i></th>
+                  <td class="text-end"><span id="modal-timezone"></span></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="align-middle"><i class="fa-solid fa-clock fa-2x"></i></th>
+                  <td class="text-end"><span id="modal-current-time"></span></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="align-middle"><i class="fa-solid fa-moon fa-2x"></i></th>
+                  <td class="text-end"><span id="modal-sunset-time"></span></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="align-middle"><i class="fa-regular fa-sun fa-2x"></i></th>
+                  <td class="text-end"><span id="modal-sunrise-time"></span></td>
+                </tr>
+              </tbody>
+            </table>
 
 
 
-
-
-<!--scripts-->
-
-<!--jQuuery-->
-<script type="text/javascript" src="libs/js/jquery-3.6.3.js"></script>
-
-<!--leaflet-->
-    <script src="libs/leaflet/leaflet.js"></script>
-
-<!--javascript-->
-    <script type="text/javascript" src="libs/js/script.js"></script>
-
-<!--bootstrap-->
-    <script src="libs/js/bootstrap.js"></script>
+<!-- leaflet -->
+<script src="libs/leaflet/leaflet.js"></script>
 
 <!--leaflet marker cluster-->
-    <script src="libs/leafletMarkerCluster/leaflet.markercluster-src.js"></script>
-    <script src="libs/leafletMarkerCluster/leaflet.markercluster.js"></script>
+<script src="libs/leafletMarkerCluster/leaflet.markercluster-src.js"></script>
+<script src="libs/leafletMarkerCluster/leaflet.markercluster.js"></script>
 
 <!--leaflet extra markers-->
-    <script src="libs/leafletExtraMarkers/js/leaflet.extra-markers.min.js"></script>
+<script src="libs/leafletExtraMarkers/js/leaflet.extra-markers.min.js"></script>
+
+<!-- easy button -->
+<script src="libs/Leaflet.EasyButton/src/easy-button.js"></script>
+
+<!-- moment -->
+<script src="libs/moment/moment.js"></script>
+
+<!--jQuuery-->
+<script src="libs/js/jquery-3.6.3.js"></script>
+
+<!--bootstrap-->
+<script src="libs/js/bootstrap.js"></script>
+
+
+<!--javascript-->
+<script type="text/javascript" src="libs/js/script.js"></script>
+
+
    
 
 </body>
