@@ -1,10 +1,12 @@
 <?php
+include 'config.php';
+
 $url = 'http://api.geonames.org/countryInfoJSON';
 
 $params = array(
     'lang' => 'en',
     'country' => $_POST['iso_code'],
-    'username' => 'matt1883', 
+    'username' => $username,
 );
 
 $ch = curl_init();

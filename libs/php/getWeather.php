@@ -1,4 +1,5 @@
 <?php
+include 'config.php';
 
 $iso_code = $_GET['iso_code'];
 
@@ -13,7 +14,7 @@ $restData = json_decode($restResult, true);
 $lat = $restData['latlng'][0];
 $lng = $restData['latlng'][1];
 
-$weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=8b8b3b8efd5719cc409baad20eeec20a';
+$weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=' . $weather_api_key;
 $weatherCurl = curl_init($weatherUrl);
 curl_setopt($weatherCurl, CURLOPT_RETURNTRANSFER, true);
 $weatherResult = curl_exec($weatherCurl);
@@ -27,7 +28,7 @@ $maxTemp = $weatherData['main']['temp_max'];
 $weatherDesc = $weatherData['weather'][0]['description'];
 $weatherIcon = $weatherData['weather'][0]['icon'];
 
-$forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=8b8b3b8efd5719cc409baad20eeec20a';
+$forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' . $lat . '&lon=' . $lng . '&units=metric&exclude=minutely,hourly,alerts&appid=' . $weather_api_key;
 $forecastCurl = curl_init($forecastUrl);
 curl_setopt($forecastCurl, CURLOPT_RETURNTRANSFER, true);
 $forecastResult = curl_exec($forecastCurl);

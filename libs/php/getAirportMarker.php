@@ -1,8 +1,8 @@
 <?php
 
-$url = 'http://api.geonames.org/searchJSON';
+include 'config.php';
 
-$username = 'matt1883';
+$url = 'http://api.geonames.org/searchJSON';
 
 $iso_code = $_POST['iso_code'];
 
@@ -35,3 +35,4 @@ header('Content-Type: application/json');
 echo json_encode([
     'airports' => $airports,
 ]);
+?>

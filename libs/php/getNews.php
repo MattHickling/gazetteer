@@ -1,11 +1,15 @@
 <?php
 
-$iso_code = $_GET['iso_code']; 
+include 'config.php';
+
+$iso_code = $_GET['iso_code'];
+
+$url = "http://api.mediastack.com/v1/news?access_key={$news_api_key}&languages=en&countries={$iso_code}&limit=20";
 
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-    CURLOPT_URL => "http://api.mediastack.com/v1/news?access_key=d2d3fb528c418ea65db242226aac02dd&languages=en&countries=$iso_code&limit=20",
+    CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => "",
     CURLOPT_MAXREDIRS => 10,
@@ -51,3 +55,4 @@ if ($err) {
         echo $response;
     }
 }
+?>
