@@ -1,4 +1,5 @@
 <?php
+
 $url = 'http://api.geonames.org/countryInfoJSON';
 
 $params = array(
